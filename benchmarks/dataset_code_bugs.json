@@ -1,0 +1,107 @@
+[
+  {
+    "id": "CODE-01",
+    "title": "Unbounded Discount Rate Yielding Negative Price",
+    "has_violation": true,
+    "expected_category": "financial_invariant_violation",
+    "code": "def apply_discount(price: float, discount_rate: float) -> float:\n    return round(price * (1.0 - discount_rate), 2)\n"
+  },
+  {
+    "id": "CODE-02",
+    "title": "Empty Telemetry Batch ZeroDivisionError",
+    "has_violation": true,
+    "expected_category": "empty_collection_zero_division",
+    "code": "def average_scores(scores: list[float]) -> float:\n    return sum(scores) / len(scores)\n"
+  },
+  {
+    "id": "CODE-03",
+    "title": "Empty List First-Element IndexError",
+    "has_violation": true,
+    "expected_category": "empty_collection_index_error",
+    "code": "def head_value(items: list[int]) -> int:\n    return items[0]\n"
+  },
+  {
+    "id": "CODE-04",
+    "title": "Zero Page Index Negative SQL Offset",
+    "has_violation": true,
+    "expected_category": "negative_pagination_offset",
+    "code": "def compute_offset(page: int, page_size: int) -> int:\n    return (page - 1) * page_size\n"
+  },
+  {
+    "id": "CODE-05",
+    "title": "Unchecked Zero Divisor in Utilization Ratio",
+    "has_violation": true,
+    "expected_category": "unchecked_zero_divisor",
+    "code": "def utilization_ratio(used: float, capacity: float) -> float:\n    return used / capacity\n"
+  },
+  {
+    "id": "CODE-06",
+    "title": "Negative Transfer Amount Drains Recipient",
+    "has_violation": true,
+    "expected_category": "negative_transfer_inversion",
+    "code": "def transfer_funds(balance_from: float, balance_to: float, amount: float) -> tuple[float, float]:\n    return balance_from - amount, balance_to + amount\n"
+  },
+  {
+    "id": "CODE-07",
+    "title": "Mutable Default List Leak Across Requests",
+    "has_violation": true,
+    "expected_category": "mutable_default_state_leak",
+    "code": "def append_audit_event(event: str, bucket: list = []) -> list:\n    bucket.append(event)\n    return bucket\n"
+  },
+  {
+    "id": "CODE-08",
+    "title": "Dynamic eval() Remote Code Execution Sink",
+    "has_violation": true,
+    "expected_category": "remote_code_execution",
+    "code": "def evaluate_formula(expr: str) -> float:\n    return float(eval(expr))\n"
+  },
+  {
+    "id": "CODE-09",
+    "title": "Subprocess shell=True Command Injection",
+    "has_violation": true,
+    "expected_category": "command_injection",
+    "code": "import subprocess\ndef compress_log(path: str) -> int:\n    return subprocess.Popen(f'gzip {path}', shell=True).wait()\n"
+  },
+  {
+    "id": "CODE-10",
+    "title": "Non-Constant-Time HMAC Signature Comparison",
+    "has_violation": true,
+    "expected_category": "timing_side_channel",
+    "code": "def verify_token(provided_token: str, expected_token: str) -> bool:\n    return provided_token == expected_token\n"
+  },
+  {
+    "id": "CODE-11",
+    "title": "Safe Control: Guarded Mean Calculation",
+    "has_violation": false,
+    "expected_category": "safe",
+    "code": "def safe_average(scores: list[float]) -> float:\n    if not scores:\n        return 0.0\n    return sum(scores) / len(scores)\n"
+  },
+  {
+    "id": "CODE-12",
+    "title": "Safe Control: Guarded Discount Clamping",
+    "has_violation": false,
+    "expected_category": "safe",
+    "code": "def safe_discount(price: float, discount_rate: float) -> float:\n    if price < 0.0:\n        return 0.0\n    clamped_rate = min(1.0, max(0.0, discount_rate))\n    return round(price * (1.0 - clamped_rate), 2)\n"
+  },
+  {
+    "id": "CODE-13",
+    "title": "Safe Control: Constant-Time HMAC Verification",
+    "has_violation": false,
+    "expected_category": "safe",
+    "code": "import hmac\ndef verify_token_safe(provided_token: str, expected_token: str) -> bool:\n    return hmac.compare_digest(str(provided_token), str(expected_token))\n"
+  },
+  {
+    "id": "CODE-14",
+    "title": "Safe Control: Guarded Pagination Offset",
+    "has_violation": false,
+    "expected_category": "safe",
+    "code": "def safe_offset(page: int, page_size: int) -> int:\n    p = max(1, int(page))\n    s = max(1, min(int(page_size), 100))\n    return (p - 1) * s\n"
+  },
+  {
+    "id": "CODE-15",
+    "title": "Safe Control: Guarded Ratio with Zero Check",
+    "has_violation": false,
+    "expected_category": "safe",
+    "code": "def safe_ratio(used: float, capacity: float) -> float:\n    if capacity == 0:\n        return 0.0\n    return used / capacity\n"
+  }
+]

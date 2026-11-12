@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: specguard-crew
+    runtime: python
+    plan: free
+    buildCommand: pip install fastapi uvicorn pydantic hypothesis pytest httpx pyyaml
+    startCommand: uvicorn apps.backend_api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.2

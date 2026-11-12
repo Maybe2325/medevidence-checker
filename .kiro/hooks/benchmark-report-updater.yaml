@@ -1,0 +1,13 @@
+name: "Quantitative Benchmark Report Updater"
+version: "1.0.0"
+description: "Automatically re-computes Single-Prompt Baseline vs. SpecGuard-Crew evaluation metrics when benchmark datasets or evaluation scripts are modified."
+trigger:
+  type: "onFileSave"
+  patterns:
+    - "benchmarks/*.json"
+    - "benchmarks/run_evaluation.py"
+action:
+  type: "runCommand"
+  command: "python3 benchmarks/run_evaluation.py"
+  onSuccessPrompt: |
+    Quantitative evaluation completed. Ensure `benchmarks/evaluation_results.md` and the `## Evaluation` section of `README.md` reflect the latest Precision, Recall, Specificity, and F1 metrics.

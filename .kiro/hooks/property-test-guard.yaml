@@ -1,0 +1,15 @@
+name: "Property-Based Test Guard (Hypothesis PBT)"
+version: "1.0.0"
+description: "Automatically runs the Hypothesis Property-Based Test suite and Zero-PHI security checks whenever core skeleton or derived application Python files are saved."
+trigger:
+  type: "onFileSave"
+  patterns:
+    - "packages/**/*.py"
+    - "apps/**/*.py"
+    - "tests/**/*.py"
+action:
+  type: "runCommand"
+  command: "pytest -m property --tb=short"
+  onFailurePrompt: |
+    A Hypothesis property-based test failed after saving changes.
+    Inspect the falsifying counterexample reported by Hypothesis, verify the corresponding Correctness Property in `.kiro/specs/*/design.md`, and fix the regression without weakening the property invariant.

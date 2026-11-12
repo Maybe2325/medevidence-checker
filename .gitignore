@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.hypothesis/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Node / Frontend
+node_modules/
+apps/web-workbench/dist/
+.vite/
+
+# Environment & Secrets (NEVER commit secrets)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+
+# CRITICAL FOR KIROWEEN 2026:
+# The /.kiro directory MUST remain tracked at the repository root and NEVER ignored.
+!.kiro/
+!.kiro/**

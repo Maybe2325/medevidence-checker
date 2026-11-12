@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "specguard-crew"
+version = "0.1.0"
+description = "Spec-Driven Multi-Agent Verification Skeleton powering RepoNecromancer (PBT Code Auditor) and MedEvidence-Checker (Clinical Safety Verifier)"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [
+    { name = "Vige Dihu" }
+]
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.0",
+    "pydantic>=2.6.0",
+    "hypothesis>=6.98.0",
+    "pytest>=8.0.0",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "property: formal Property-Based Testing (PBT) invariants mapped to .kiro/specs/*/design.md",
+    "unit: fast deterministic unit tests",
+    "integration: end-to-end multi-agent pipeline tests",
+]
+addopts = "-v --tb=short"

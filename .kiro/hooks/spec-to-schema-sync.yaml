@@ -1,0 +1,16 @@
+name: "Spec-to-Schema & Invariant Validator"
+version: "1.0.0"
+description: "Automatically validates EARS syntax and synchronizes compiled invariant manifests whenever a .kiro/specs/**/requirements.md or design.md file is saved."
+trigger:
+  type: "onFileSave"
+  patterns:
+    - ".kiro/specs/**/requirements.md"
+    - ".kiro/specs/**/design.md"
+action:
+  type: "agentTask"
+  command: "python3 -m packages.specguard_core.compiler --validate-all"
+  prompt: |
+    A specification file in `.kiro/specs/` was updated.
+    1. Parse all `WHEN/IF/WHILE/WHERE ... THE SYSTEM SHALL ...` EARS clauses using `packages/specguard-core/compiler.py`.
+    2. Verify that every Correctness Property in `design.md` maps to a `@pytest.mark.property` test in `tests/test_skeleton_properties.py`.
+    3. Report any unmapped requirements or malformed EARS clauses.

@@ -1,0 +1,13 @@
+crewName: "specguard-crew"
+version: "1.0.0"
+description: "Kiro Crew 3-Agent Sequential Verification Pipeline powering both RepoNecromancer and MedEvidence-Checker from a single skeleton."
+executionMode: "sequential"
+agents:
+  - id: "claim-extractor"
+    config: ".kiro/agents/claim-extractor.yaml"
+  - id: "counterexample-hunter"
+    config: ".kiro/agents/counterexample-hunter.yaml"
+    dependsOn: ["claim-extractor"]
+  - id: "evidence-auditor"
+    config: ".kiro/agents/evidence-auditor.yaml"
+    dependsOn: ["counterexample-hunter"]

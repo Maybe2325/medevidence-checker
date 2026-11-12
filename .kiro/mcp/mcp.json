@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "specguard-local-mcp": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "packages.specguard_mcp_server.server"
+      ],
+      "env": {
+        "PYTHONPATH": "."
+      },
+      "disabled": false,
+      "autoApprove": [
+        "run_property_test_sandbox",
+        "query_clinical_guidelines_db",
+        "list_compiled_ears_invariants"
+      ]
+    }
+  }
+}

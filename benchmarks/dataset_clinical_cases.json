@@ -1,0 +1,142 @@
+[
+  {
+    "id": "CLIN-01",
+    "title": "Metformin in Severe CKD (eGFR 22)",
+    "has_violation": true,
+    "expected_category": "renal_contraindication",
+    "clinical_text": "Synthetic Case 01: 69yo patient with T2DM. Labs: eGFR 22 mL/min/1.73m2. Allergies: NKDA. Plan: Start Metformin 1000 mg PO BID."
+  },
+  {
+    "id": "CLIN-02",
+    "title": "Nitrofurantoin in Stage 4 CKD (eGFR 24)",
+    "has_violation": true,
+    "expected_category": "renal_contraindication",
+    "clinical_text": "Synthetic Case 02: 74yo female with cystitis. Labs: eGFR 24 mL/min/1.73m2. Allergies: NKDA. Plan: Prescribe Nitrofurantoin 100 mg PO BID x 5 days."
+  },
+  {
+    "id": "CLIN-03",
+    "title": "Ibuprofen in Stage 3b CKD (eGFR 38)",
+    "has_violation": true,
+    "expected_category": "renal_contraindication",
+    "clinical_text": "Synthetic Case 03: 65yo patient with gout flare. Labs: eGFR 38 mL/min/1.73m2. Allergies: NKDA. Plan: Start Ibuprofen 800 mg PO TID."
+  },
+  {
+    "id": "CLIN-04",
+    "title": "Dabigatran in Severe Renal Impairment (eGFR 19)",
+    "has_violation": true,
+    "expected_category": "renal_contraindication",
+    "clinical_text": "Synthetic Case 04: 78yo patient with atrial fibrillation. Labs: eGFR 19 mL/min/1.73m2. Allergies: NKDA. Plan: Continue Dabigatran 150 mg PO BID."
+  },
+  {
+    "id": "CLIN-05",
+    "title": "Lisinopril in First-Trimester Pregnancy",
+    "has_violation": true,
+    "expected_category": "pregnancy_teratogenicity",
+    "clinical_text": "Synthetic Case 05: 28yo female at 10 weeks gestation (pregnant, first trimester) with hypertension. eGFR 95. Allergies: NKDA. Plan: Start Lisinopril 10 mg PO daily."
+  },
+  {
+    "id": "CLIN-06",
+    "title": "Warfarin Thromboprophylaxis in Pregnancy",
+    "has_violation": true,
+    "expected_category": "pregnancy_teratogenicity",
+    "clinical_text": "Synthetic Case 06: 31yo female, pregnant at 14 weeks gestation with history of DVT. eGFR 102. Allergies: NKDA. Plan: Continue Warfarin 5 mg PO daily."
+  },
+  {
+    "id": "CLIN-07",
+    "title": "Isotretinoin Prescribed in Early Pregnancy",
+    "has_violation": true,
+    "expected_category": "pregnancy_teratogenicity",
+    "clinical_text": "Synthetic Case 07: 23yo female with positive hCG (pregnant, 6 weeks gestation) requesting nodular acne refill. eGFR 110. Allergies: NKDA. Plan: Refill Isotretinoin 40 mg PO BID."
+  },
+  {
+    "id": "CLIN-08",
+    "title": "Piperacillin (Zosyn) in Documented Penicillin Anaphylaxis",
+    "has_violation": true,
+    "expected_category": "allergy_cross_reactivity",
+    "clinical_text": "Synthetic Case 08: 58yo patient with sepsis. eGFR 70. Allergies: Penicillin (history of anaphylaxis). Plan: Administer Piperacillin / Zosyn 4.5 g IV q6h."
+  },
+  {
+    "id": "CLIN-09",
+    "title": "TMP-SMX (Bactrim) in Documented Severe Sulfa Allergy",
+    "has_violation": true,
+    "expected_category": "allergy_cross_reactivity",
+    "clinical_text": "Synthetic Case 09: 42yo patient with cellulitis. eGFR 88. Allergies: Sulfa antibiotics (prior Stevens-Johnson rash). Plan: Start Bactrim DS 1 tab PO BID."
+  },
+  {
+    "id": "CLIN-10",
+    "title": "Warfarin + Fluconazole CYP2C9 Interaction",
+    "has_violation": true,
+    "expected_category": "drug_drug_interaction",
+    "clinical_text": "Synthetic Case 10: 66yo patient on chronic Warfarin 5 mg daily presenting with candidiasis. eGFR 72. Allergies: NKDA. Plan: Continue Warfarin 5 mg and add Fluconazole 200 mg PO daily."
+  },
+  {
+    "id": "CLIN-11",
+    "title": "Sertraline + Linezolid Serotonin Syndrome Interaction",
+    "has_violation": true,
+    "expected_category": "drug_drug_interaction",
+    "clinical_text": "Synthetic Case 11: 49yo patient on Sertraline 100 mg daily admitted with MRSA pneumonia. eGFR 84. Allergies: NKDA. Plan: Continue Sertraline and initiate Linezolid 600 mg IV q12h."
+  },
+  {
+    "id": "CLIN-12",
+    "title": "Simvastatin + Clarithromycin CYP3A4 Rhabdomyolysis Interaction",
+    "has_violation": true,
+    "expected_category": "drug_drug_interaction",
+    "clinical_text": "Synthetic Case 12: 61yo patient taking Simvastatin 40 mg nightly with atypical pneumonia. eGFR 76. Allergies: NKDA. Plan: Continue Simvastatin and start Clarithromycin 500 mg PO BID."
+  },
+  {
+    "id": "CLIN-13",
+    "title": "Safe Control: Metformin in Normal Renal Function (eGFR 82)",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 13: 52yo non-pregnant patient with T2DM. Labs: eGFR 82 mL/min/1.73m2. Allergies: NKDA. Plan: Continue Metformin 500 mg PO BID."
+  },
+  {
+    "id": "CLIN-14",
+    "title": "Safe Control: Linagliptin + Acetaminophen in Stage 4 CKD (eGFR 24)",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 14: 73yo non-pregnant patient with T2DM and knee pain. Labs: eGFR 24 mL/min/1.73m2. Allergies: NKDA. Plan: Start Linagliptin 5 mg PO daily and Acetaminophen 500 mg PO TID."
+  },
+  {
+    "id": "CLIN-15",
+    "title": "Safe Control: Labetalol in Pregnancy Hypertension",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 15: 30yo female at 16 weeks gestation (pregnant) with chronic hypertension. eGFR 96. Allergies: NKDA. Plan: Start Labetalol 100 mg PO BID."
+  },
+  {
+    "id": "CLIN-16",
+    "title": "Safe Control: Azithromycin in Penicillin Allergy",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 16: 45yo non-pregnant patient with bronchitis. eGFR 88. Allergies: Penicillin (hives). Plan: Prescribe Azithromycin 500 mg day 1 then 250 mg days 2-5."
+  },
+  {
+    "id": "CLIN-17",
+    "title": "Safe Control: Vancomycin + Sertraline for MRSA",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 17: 50yo non-pregnant patient on Sertraline 100 mg daily with MRSA bacteremia. eGFR 80. Allergies: NKDA. Plan: Continue Sertraline and start Vancomycin IV."
+  },
+  {
+    "id": "CLIN-18",
+    "title": "Safe Control: Amlodipine + Levothyroxine Routine Regimen",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 18: 60yo non-pregnant patient with hypertension and hypothyroidism. eGFR 74. Allergies: NKDA. Plan: Continue Amlodipine 5 mg daily and Levothyroxine 75 mcg daily."
+  },
+  {
+    "id": "CLIN-19",
+    "title": "Safe Control: Nitrofurantoin with Preserved Renal Function (eGFR 78)",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 19: 34yo non-pregnant female with acute uncomplicated cystitis. Labs: eGFR 78 mL/min/1.73m2. Allergies: NKDA. Plan: Start Nitrofurantoin 100 mg PO BID x 5 days."
+  },
+  {
+    "id": "CLIN-20",
+    "title": "Safe Control: Apixaban in Mild CKD (eGFR 64)",
+    "has_violation": false,
+    "expected_category": "safe",
+    "clinical_text": "Synthetic Case 20: 67yo non-pregnant patient with atrial fibrillation. Labs: eGFR 64 mL/min/1.73m2. Allergies: NKDA. Plan: Continue Apixaban 5 mg PO BID."
+  }
+]

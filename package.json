@@ -1,0 +1,14 @@
+{
+  "name": "specguard-crew",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "description": "Kiro Skeleton Crew project: One lean spec-driven multi-agent verification skeleton powering two distinct applications (apps/repo-necromancer & apps/med-evidence-checker)",
+  "scripts": {
+    "test": "pytest",
+    "test:pbt": "pytest -m property",
+    "eval": "python3 benchmarks/run_evaluation.py",
+    "dev:api": "uvicorn apps.backend_api.main:app --reload --port 8000",
+    "dev:web": "npm --prefix apps/web-workbench run dev"
+  }
+}
