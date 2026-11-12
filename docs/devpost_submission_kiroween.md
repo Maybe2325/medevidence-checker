@@ -14,7 +14,7 @@ Below are the exact ready-to-submit answers mapped to all 20 official fields (`g
 - **Value**: `Skeleton Crew`
 
 ### Field 4 (`id: 29619`): Public GitHub (NO GitLab or BitBucket) repo URL
-- **Value**: `https://github.com/<YOUR_GITHUB_USERNAME>/specguard-crew`
+- **Value**: `https://github.com/Maybe2325/specguard-crew`
 - **Checklist Reminder**:
   - Repository is Public on GitHub.
   - MIT License is visible in the GitHub "About" section (top right).
@@ -97,7 +97,7 @@ Confirmation: I am currently enrolled and attending classes as a graduate studen
 
 ### Field 12 (`id: 29627`): Best Kiro Crew Bonus Prize Details
 ```text
-GitHub Repository URL: https://github.com/<YOUR_GITHUB_USERNAME>/specguard-crew
+GitHub Repository URL: https://github.com/Maybe2325/specguard-crew
 
 Kiro Crew App Description & Features:
 SpecGuard-Crew (`packages/specguard_core/crew_orchestrator.py` + `/.kiro/agents/crew-pipeline.yaml`) is a multi-agent verification system built on the Kiro Crew sequential orchestration pattern. It coordinates three specialized agents:

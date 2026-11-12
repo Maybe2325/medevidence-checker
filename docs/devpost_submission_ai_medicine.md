@@ -10,6 +10,6 @@ The project description for **MedEvidence-Checker (SpecGuard-Crew)** (`project_i
 6. **Full Attribution & AI Tools Disclosure**
 
 ## Final Links to Attach Before Clicking Submit
-- **GitHub Repository URL**: `https://github.com/<YOUR_GITHUB_USERNAME>/specguard-crew`
+- **GitHub Repository URL**: `https://github.com/Maybe2325/specguard-crew`
 - **Live Demo / Workbench URL**: `<YOUR_DEPLOYED_DEMO_URL_OR_GITHUB_PAGES_URL>`
 - **Demo Video URL**: `<YOUR_YOUTUBE_OR_YOUKU_VIDEO_URL>`
