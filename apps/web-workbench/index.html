@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SpecGuard-Crew | Kiro Skeleton Crew Dual-Application Workbench</title>
+  <title>SpecGuard-Crew | Kiro Skeleton Crew Dual-Application Workbench (EN / 中文)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
       --font-mono: 'JetBrains Mono', monospace;
-      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
     }
 
     body {
@@ -22,7 +22,6 @@
       font-family: var(--font-mono);
     }
 
-    /* Haunted CRT Scanline Overlay for App #1 (RepoNecromancer) */
     .crt-scanlines {
       background: linear-gradient(
         rgba(18, 16, 16, 0) 50%,
@@ -49,7 +48,7 @@
           SG
         </div>
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="font-bold tracking-tight text-lg">SpecGuard-Crew</span>
             <span class="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 font-mono-code">
               Kiroween 2026 · Skeleton Crew
@@ -58,47 +57,47 @@
               AI for Medicine · Zero-PHI
             </span>
           </div>
-          <p id="header-subtitle" class="text-xs text-slate-400">
+          <p id="i18n-header-subtitle" class="text-xs text-slate-400">
             One Lean Kiro 3-Agent Verification Skeleton (`packages/specguard_core`) Powering Two Distinct Applications
           </p>
         </div>
       </div>
 
-      <!-- Dual-Application & Inspector Switcher -->
+      <!-- Dual-Application, Inspector & Bilingual Switcher -->
       <div class="flex flex-wrap items-center gap-2">
         <button
           id="tab-app1"
           onclick="switchView('app1')"
-          class="px-3.5 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-lg"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-lg"
         >
-          <span>🎃 App #1: RepoNecromancer</span>
+          <span id="i18n-tab-app1">🎃 App #1: RepoNecromancer</span>
           <span class="opacity-75 text-[10px]">(apps/repo-necromancer)</span>
         </button>
 
         <button
           id="tab-app2"
           onclick="switchView('app2')"
-          class="px-3.5 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700"
         >
-          <span>🩺 App #2: MedEvidence-Checker</span>
+          <span id="i18n-tab-app2">🩺 App #2: MedEvidence-Checker</span>
           <span class="opacity-75 text-[10px]">(apps/med-evidence-checker)</span>
         </button>
 
         <button
           id="tab-kiro"
           onclick="switchView('kiro')"
-          class="px-3.5 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-purple-300 hover:bg-slate-700 border border-purple-500/40"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-purple-300 hover:bg-slate-700 border border-purple-500/40"
         >
-          <span>⚡ /.kiro Live Inspector</span>
+          <span id="i18n-tab-kiro">⚡ /.kiro Live Inspector</span>
           <span class="px-1.5 py-0.2 rounded bg-purple-500/30 text-[10px]">21 EARS</span>
         </button>
 
         <button
           id="tab-bench"
           onclick="switchView('bench')"
-          class="px-3.5 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-amber-300 hover:bg-slate-700 border border-amber-500/40"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-amber-300 hover:bg-slate-700 border border-amber-500/40"
         >
-          <span>📊 Evaluation Benchmarks</span>
+          <span id="i18n-tab-bench">📊 Evaluation Benchmarks</span>
           <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-[10px]">100% F1</span>
         </button>
 
@@ -106,21 +105,30 @@
           id="btn-autodemo"
           onclick="toggleAutoDemo()"
           class="px-3 py-2 rounded-lg text-xs font-bold font-mono-code transition bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-95 shadow"
-          title="Automated guided tour for recording or judging"
         >
-          🎬 Auto-Demo Tour
+          <span id="i18n-btn-autodemo">🎬 Auto-Demo Tour</span>
+        </button>
+
+        <!-- Language Switcher (EN / 简体中文) -->
+        <button
+          id="btn-lang"
+          onclick="toggleLanguage()"
+          class="px-3 py-2 rounded-lg text-xs font-bold font-mono-code transition bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/40"
+          title="Switch Language / 切换中英文"
+        >
+          🌐 中文 / EN
         </button>
       </div>
     </div>
 
-    <!-- Auto-Demo Caption Banner (Hidden unless Auto-Demo is active) -->
+    <!-- Auto-Demo Caption Banner -->
     <div id="autodemo-banner" class="hidden bg-gradient-to-r from-purple-900/95 via-indigo-900/95 to-emerald-900/95 border-t border-purple-400/40 px-4 py-2 text-center">
       <div class="max-w-5xl mx-auto flex items-center justify-between gap-4">
         <span id="autodemo-step-badge" class="text-xs font-mono-code px-2 py-0.5 rounded bg-white/15 text-amber-300 font-bold">
           SCENE 1 / 5
         </span>
         <p id="autodemo-caption" class="text-sm font-medium text-white flex-1"></p>
-        <button onclick="stopAutoDemo()" class="text-xs font-mono-code px-2 py-1 rounded bg-rose-500/30 text-rose-200 border border-rose-400/40">
+        <button onclick="stopAutoDemo()" id="i18n-btn-stop-tour" class="text-xs font-mono-code px-2 py-1 rounded bg-rose-500/30 text-rose-200 border border-rose-400/40">
           Stop Tour
         </button>
       </div>
@@ -130,10 +138,10 @@
   <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
     <!-- Shared Skeleton Crew Architecture Ribbon -->
-    <section id="skeleton-ribbon" class="rounded-xl border border-emerald-500/30 bg-[#0d141d] p-4 glow-emerald">
+    <section id="skeleton-ribbon" class="rounded-xl border border-emerald-500/30 bg-[#0d141d] p-4 glow-emerald text-slate-100">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-mono-code uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">
+          <span id="i18n-ribbon-title" class="text-xs font-mono-code uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">
             Shared Kiro Crew Skeleton Pipeline
           </span>
           <span id="active-domain-badge" class="text-xs font-mono-code text-slate-400">
@@ -147,12 +155,12 @@
 
       <!-- 3-Agent Pipeline Visualizer -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div id="agent-card-1" class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3 transition">
+        <div class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3">
           <div class="flex items-center justify-between text-xs font-mono-code mb-1">
-            <span class="font-bold text-emerald-400">1. ClaimExtractor (Agent #1)</span>
-            <span id="trace-time-1" class="text-slate-400">0.42 ms</span>
+            <span id="i18n-agent1-title" class="font-bold text-emerald-400">1. ClaimExtractor (Agent #1)</span>
+            <span class="text-slate-400">0.42 ms</span>
           </div>
-          <p id="trace-summary-1" class="text-xs text-slate-300">
+          <p id="i18n-agent1-desc" class="text-xs text-slate-300">
             Compiles EARS clauses from `.kiro/specs/` and decomposes artifact into atomic claims.
           </p>
           <div class="mt-1.5 text-[11px] font-mono-code text-purple-300/90">
@@ -160,12 +168,12 @@
           </div>
         </div>
 
-        <div id="agent-card-2" class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3 transition">
+        <div class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3">
           <div class="flex items-center justify-between text-xs font-mono-code mb-1">
-            <span class="font-bold text-amber-400">2. CounterexampleHunter (Agent #2)</span>
-            <span id="trace-time-2" class="text-slate-400">1.18 ms</span>
+            <span id="i18n-agent2-title" class="font-bold text-amber-400">2. CounterexampleHunter (Agent #2)</span>
+            <span class="text-slate-400">1.18 ms</span>
           </div>
-          <p id="trace-summary-2" class="text-xs text-slate-300">
+          <p id="i18n-agent2-desc" class="text-xs text-slate-300">
             Invokes domain MCP tool (`run_property_test_sandbox` or `query_clinical_guidelines_db`) to hunt counterexamples.
           </p>
           <div class="mt-1.5 text-[11px] font-mono-code text-purple-300/90">
@@ -173,12 +181,12 @@
           </div>
         </div>
 
-        <div id="agent-card-3" class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3 transition">
+        <div class="rounded-lg border border-slate-700/80 bg-slate-900/70 p-3">
           <div class="flex items-center justify-between text-xs font-mono-code mb-1">
-            <span class="font-bold text-sky-400">3. EvidenceAuditor (Agent #3)</span>
-            <span id="trace-time-3" class="text-slate-400">0.31 ms</span>
+            <span id="i18n-agent3-title" class="font-bold text-sky-400">3. EvidenceAuditor (Agent #3)</span>
+            <span class="text-slate-400">0.31 ms</span>
           </div>
-          <p id="trace-summary-3" class="text-xs text-slate-300">
+          <p id="i18n-agent3-desc" class="text-xs text-slate-300">
             Enforces Property 2 (Monotonic Severity Escalation) and synthesizes verified patches or clinical safety plans.
           </p>
           <div class="mt-1.5 text-[11px] font-mono-code text-purple-300/90">
@@ -198,14 +206,14 @@
           <div class="rounded-xl border border-emerald-500/30 bg-[#0b1118] p-4 space-y-3">
             <div class="flex items-center justify-between">
               <h2 class="text-sm font-bold font-mono-code text-emerald-300 flex items-center gap-2">
-                <span>🎃 App #1: RepoNecromancer</span>
+                <span id="i18n-app1-heading">🎃 App #1: RepoNecromancer</span>
                 <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300">PBT + AST Sandbox</span>
               </h2>
               <span class="text-[11px] font-mono-code text-slate-400">Folder: `apps/repo-necromancer`</span>
             </div>
 
             <div>
-              <label class="block text-xs font-mono-code text-slate-400 mb-1.5">
+              <label id="i18n-app1-preset-label" class="block text-xs font-mono-code text-slate-400 mb-1.5">
                 Select Legacy / AI-Generated Code Preset:
               </label>
               <select
@@ -217,8 +225,8 @@
 
             <div>
               <div class="flex items-center justify-between text-xs font-mono-code text-slate-400 mb-1">
-                <span>Target Python Source Artifact (Editable):</span>
-                <span class="text-emerald-400">MCP Tool: `run_property_test_sandbox`</span>
+                <span id="i18n-app1-input-label">Target Python Source Artifact (Editable):</span>
+                <span class="text-emerald-400">MCP: `run_property_test_sandbox`</span>
               </div>
               <textarea
                 id="app1-code-input"
@@ -229,6 +237,7 @@
 
             <button
               onclick="runApp1Audit()"
+              id="i18n-app1-run-btn"
               class="w-full py-2.5 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold font-mono-code text-xs transition shadow-lg"
             >
               ⚡ Run 3-Agent EARS + Hypothesis PBT Audit
@@ -237,18 +246,18 @@
 
           <!-- Single-Prompt Baseline vs SpecGuard-Crew Comparison Card -->
           <div class="rounded-xl border border-purple-500/30 bg-[#0b1118] p-4 space-y-2">
-            <h3 class="text-xs font-bold font-mono-code text-purple-300 uppercase tracking-wider">
+            <h3 id="i18n-app1-compare-title" class="text-xs font-bold font-mono-code text-purple-300 uppercase tracking-wider">
               Why Single-Prompt LLM Review Fails Here
             </h3>
             <div class="grid grid-cols-2 gap-3 text-xs font-mono-code">
               <div class="rounded-lg bg-slate-900/90 border border-slate-800 p-2.5">
-                <div class="text-slate-400 text-[11px]">Single-Prompt Baseline:</div>
+                <div id="i18n-app1-base-label" class="text-slate-400 text-[11px]">Single-Prompt Baseline:</div>
                 <div id="app1-baseline-badge" class="mt-1 font-bold text-amber-300">
                   MISSED (False Negative)
                 </div>
               </div>
               <div class="rounded-lg bg-emerald-950/40 border border-emerald-500/40 p-2.5">
-                <div class="text-emerald-300 text-[11px]">SpecGuard-Crew + PBT:</div>
+                <div id="i18n-app1-crew-label" class="text-emerald-300 text-[11px]">SpecGuard-Crew + PBT:</div>
                 <div id="app1-crew-badge" class="mt-1 font-bold text-emerald-400">
                   CAUGHT + PATCHED
                 </div>
@@ -262,19 +271,19 @@
           <div class="rounded-xl border border-emerald-500/30 bg-[#0b1118] p-4 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
               <div>
-                <span class="text-xs font-mono-code text-slate-400">Audit Status:</span>
+                <span id="i18n-app1-status-label" class="text-xs font-mono-code text-slate-400">Audit Status:</span>
                 <span id="app1-status-pill" class="ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-500/20 text-rose-300 border border-rose-500/40">
                   VIOLATION_DETECTED
                 </span>
               </div>
               <div class="text-xs font-mono-code text-slate-400">
-                Compiled EARS Clauses: <span id="app1-ears-count" class="text-emerald-300 font-bold">5</span> (.kiro/specs/repo-necromancer)
+                <span id="i18n-app1-ears-label">Compiled EARS Clauses:</span> <span id="app1-ears-count" class="text-emerald-300 font-bold">5</span> (.kiro/specs/repo-necromancer)
               </div>
             </div>
 
             <!-- Shrunk Counterexample Witness List -->
             <div>
-              <h3 class="text-xs font-bold font-mono-code text-slate-300 uppercase tracking-wider mb-2">
+              <h3 id="i18n-app1-witness-heading" class="text-xs font-bold font-mono-code text-slate-300 uppercase tracking-wider mb-2">
                 Agent #2 (`CounterexampleHunter`) — Shrunk Falsifying Witnesses:
               </h3>
               <div id="app1-witness-list" class="space-y-2.5"></div>
@@ -283,10 +292,10 @@
             <!-- Synthesized Verified Patch -->
             <div>
               <div class="flex items-center justify-between mb-1.5">
-                <h3 class="text-xs font-bold font-mono-code text-emerald-300 uppercase tracking-wider">
+                <h3 id="i18n-app1-patch-heading" class="text-xs font-bold font-mono-code text-emerald-300 uppercase tracking-wider">
                   Agent #3 (`EvidenceAuditor`) — Synthesized & PBT-Verified Patch:
                 </h3>
-                <span class="text-[11px] font-mono-code text-purple-300">Validates Property 5 (Patch Soundness)</span>
+                <span class="text-[11px] font-mono-code text-purple-300">Property 5 (Patch Soundness)</span>
               </div>
               <pre id="app1-patched-code" class="rounded-lg bg-[#05080c] border border-emerald-500/30 p-3 text-xs font-mono-code text-emerald-200 overflow-x-auto"></pre>
             </div>
@@ -305,14 +314,14 @@
           <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-3">
             <div class="flex items-center justify-between">
               <h2 class="text-sm font-bold text-sky-800 flex items-center gap-2">
-                <span>🩺 App #2: MedEvidence-Checker</span>
+                <span id="i18n-app2-heading">🩺 App #2: MedEvidence-Checker</span>
                 <span class="text-[11px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-mono-code">Zero-PHI</span>
               </h2>
               <span class="text-[11px] font-mono-code text-slate-500">Folder: `apps/med-evidence-checker`</span>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1.5">
+              <label id="i18n-app2-preset-label" class="block text-xs font-semibold text-slate-600 mb-1.5">
                 Select Synthetic Clinical Vignette Preset (100% Zero-PHI):
               </label>
               <select
@@ -324,7 +333,7 @@
 
             <div>
               <div class="flex items-center justify-between text-xs text-slate-600 mb-1">
-                <span class="font-semibold">Synthetic Clinical Note / Discharge Plan (Editable):</span>
+                <span id="i18n-app2-input-label" class="font-semibold">Synthetic Clinical Note / Discharge Plan (Editable):</span>
                 <span class="font-mono-code text-[11px] text-sky-700">MCP: `query_clinical_guidelines_db`</span>
               </div>
               <textarea
@@ -336,6 +345,7 @@
 
             <button
               onclick="runApp2Audit()"
+              id="i18n-app2-run-btn"
               class="w-full py-2.5 px-4 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs transition shadow"
             >
               🩺 Run 3-Agent Clinical Guideline & Contraindication Audit
@@ -344,25 +354,25 @@
 
           <!-- Extracted Patient Physiology Cards -->
           <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-2.5">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <h3 id="i18n-app2-phys-heading" class="text-xs font-bold uppercase tracking-wider text-slate-500">
               Agent #1 (`ClaimExtractor`) — Structured Patient Physiology
             </h3>
             <div class="grid grid-cols-3 gap-2 text-xs">
               <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div class="text-slate-500 text-[11px]">Renal eGFR</div>
+                <div id="i18n-phys-egfr" class="text-slate-500 text-[11px]">Renal eGFR</div>
                 <div id="med-ctx-egfr" class="font-bold font-mono-code text-sm text-rose-700 mt-0.5">22 mL/min</div>
               </div>
               <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div class="text-slate-500 text-[11px]">Pregnancy Status</div>
+                <div id="i18n-phys-preg" class="text-slate-500 text-[11px]">Pregnancy Status</div>
                 <div id="med-ctx-preg" class="font-bold font-mono-code text-sm text-slate-800 mt-0.5">Non-Pregnant</div>
               </div>
               <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div class="text-slate-500 text-[11px]">Allergies</div>
+                <div id="i18n-phys-allergy" class="text-slate-500 text-[11px]">Allergies</div>
                 <div id="med-ctx-allergy" class="font-bold font-mono-code text-sm text-slate-800 mt-0.5">NKDA</div>
               </div>
             </div>
             <div class="text-xs text-slate-600 pt-1">
-              <span class="font-semibold">Extracted Active Orders:</span>
+              <span id="i18n-phys-orders" class="font-semibold">Extracted Active Orders:</span>
               <span id="med-ctx-drugs" class="font-mono-code text-sky-800 ml-1">metformin, ibuprofen</span>
             </div>
           </div>
@@ -373,19 +383,19 @@
           <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div>
-                <span class="text-xs font-semibold text-slate-500">Clinical Safety Verdict:</span>
+                <span id="i18n-app2-status-label" class="text-xs font-semibold text-slate-500">Clinical Safety Verdict:</span>
                 <span id="app2-status-pill" class="ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-100 text-rose-800 border border-rose-300">
                   VIOLATION_DETECTED
                 </span>
               </div>
               <div class="text-xs font-mono-code text-slate-500">
-                Single-Prompt Baseline: <span id="app2-baseline-pill" class="font-bold text-rose-700">MISSED (Silent Hallucination)</span>
+                <span id="i18n-app2-base-label">Single-Prompt Baseline:</span> <span id="app2-baseline-pill" class="font-bold text-rose-700">MISSED (Silent Hallucination)</span>
               </div>
             </div>
 
             <!-- Contraindication Evidence Cards -->
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+              <h3 id="i18n-app2-witness-heading" class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                 Agent #2 (`CounterexampleHunter`) — Guideline Contraindication Evidence:
               </h3>
               <div id="app2-witness-list" class="space-y-2.5"></div>
@@ -393,18 +403,18 @@
 
             <!-- Mandatory AI for Medicine Safety & Harm Disclosure Block -->
             <div class="rounded-lg bg-amber-50 border border-amber-300 p-3.5 space-y-2 text-xs text-slate-800">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-amber-900 uppercase tracking-wider">
+              <div class="flex items-center justify-between flex-wrap gap-1">
+                <span id="i18n-ethics-title" class="font-bold text-amber-900 uppercase tracking-wider">
                   ⚖️ Mandatory Ethics & Safety Disclosure (`Who Benefits, and Who Could Be Harmed`)
                 </span>
                 <span class="font-mono-code text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">
                   Property 6 Verified · Zero-PHI
                 </span>
               </div>
-              <p>
+              <p id="i18n-ethics-benefits">
                 <strong>Who Benefits:</strong> Junior hospital residents, clinical pharmacists, and primary care clinicians performing medication reconciliation; patients with impaired renal function (CKD stage 3–5), pregnancy, documented allergies, or complex polypharmacy.
               </p>
-              <p>
+              <p id="i18n-ethics-harms">
                 <strong>Who Could Be Harmed & Guardrails:</strong> Over-reliance on automated checks (automation bias) could harm patients with rare metabolic conditions outside the knowledge base. This system enforces mandatory <strong>Human-in-the-Loop clinician sign-off</strong> and automatic SSN/PHI redaction.
               </p>
             </div>
@@ -417,13 +427,13 @@
     <!-- VIEW 3: /.kiro LIVE INSPECTOR (ALL 7 KIRO CAPABILITIES)               -->
     <!-- ===================================================================== -->
     <section id="view-kiro" class="hidden space-y-6">
-      <div class="rounded-xl border border-purple-500/40 bg-[#0b1018] p-5 space-y-4 glow-purple">
+      <div class="rounded-xl border border-purple-500/40 bg-[#0b1018] p-5 space-y-4 glow-purple text-slate-100">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h2 class="text-base font-bold text-purple-300 font-mono-code">
+            <h2 id="i18n-kiro-heading" class="text-base font-bold text-purple-300 font-mono-code">
               ⚡ Root `/.kiro` Directory Live Inspector (21 Compiled EARS Invariants)
             </h2>
-            <p class="text-xs text-slate-400">
+            <p id="i18n-kiro-sub" class="text-xs text-slate-400">
               Demonstrating complete Kiro feature coverage required by Kiroween 2026: Specs (EARS) · PBT · Steering · Hooks · Custom Agents (Kiro Crew) · MCP · Powers
             </p>
           </div>
@@ -462,7 +472,7 @@
 
         <!-- Compiled EARS Clause Table -->
         <div>
-          <h3 class="text-xs font-bold font-mono-code text-slate-300 uppercase tracking-wider mb-2">
+          <h3 id="i18n-kiro-table-title" class="text-xs font-bold font-mono-code text-slate-300 uppercase tracking-wider mb-2">
             Live Compiled `VerificationDAG` Clauses (`packages/specguard_core/compiler.py`):
           </h3>
           <div class="overflow-x-auto rounded-lg border border-slate-800">
@@ -486,18 +496,18 @@
     <!-- VIEW 4: QUANTITATIVE EVALUATION BENCHMARKS (`run_evaluation.py`)      -->
     <!-- ===================================================================== -->
     <section id="view-bench" class="hidden space-y-6">
-      <div class="rounded-xl border border-amber-500/40 bg-[#0b1018] p-5 space-y-5">
+      <div class="rounded-xl border border-amber-500/40 bg-[#0b1018] p-5 space-y-5 text-slate-100">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h2 class="text-base font-bold text-amber-300 font-mono-code">
+            <h2 id="i18n-bench-heading" class="text-base font-bold text-amber-300 font-mono-code">
               📊 Reproducible Quantitative Evaluation (`benchmarks/run_evaluation.py`)
             </h2>
-            <p class="text-xs text-slate-400">
+            <p id="i18n-bench-sub" class="text-xs text-slate-400">
               Side-by-side comparison of Single-Prompt Baseline vs. SpecGuard-Crew across N=15 Code Defects and N=20 Synthetic Clinical Vignettes
             </p>
           </div>
           <span class="text-xs font-mono-code px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-            10 / 10 Pytest + Hypothesis Suites Passing
+            13 / 13 Pytest + Hypothesis Suites Passing
           </span>
         </div>
 
@@ -513,17 +523,17 @@
             <table class="w-full text-xs font-mono-code">
               <thead class="text-slate-400 border-b border-slate-800">
                 <tr>
-                  <th class="py-1.5 text-left">Metric</th>
+                  <th class="py-1.5 text-left">Metric / 指标</th>
                   <th class="py-1.5 text-right">Single-Prompt Baseline</th>
                   <th class="py-1.5 text-right text-emerald-300">SpecGuard-Crew (PBT)</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-800/70">
-                <tr><td class="py-1.5">Recall (Sensitivity)</td><td class="text-right text-rose-400">20.00% (2/10)</td><td class="text-right font-bold text-emerald-400">100.00% (10/10)</td></tr>
-                <tr><td class="py-1.5">Precision</td><td class="text-right">100.00%</td><td class="text-right font-bold text-emerald-400">100.00%</td></tr>
-                <tr><td class="py-1.5">Specificity (Safe Controls)</td><td class="text-right">100.00% (5/5)</td><td class="text-right font-bold text-emerald-400">100.00% (5/5)</td></tr>
-                <tr><td class="py-1.5">F1-Score</td><td class="text-right text-amber-300">33.33%</td><td class="text-right font-bold text-emerald-400">100.00%</td></tr>
-                <tr><td class="py-1.5">False Negative Rate</td><td class="text-right text-rose-400">80.00%</td><td class="text-right font-bold text-emerald-400">0.00%</td></tr>
+                <tr><td class="py-1.5">Recall (Sensitivity / 召回率)</td><td class="text-right text-rose-400">20.00% (2/10)</td><td class="text-right font-bold text-emerald-400">100.00% (10/10)</td></tr>
+                <tr><td class="py-1.5">Precision (精确率)</td><td class="text-right">100.00%</td><td class="text-right font-bold text-emerald-400">100.00%</td></tr>
+                <tr><td class="py-1.5">Specificity (安全样本特异度)</td><td class="text-right">100.00% (5/5)</td><td class="text-right font-bold text-emerald-400">100.00% (5/5)</td></tr>
+                <tr><td class="py-1.5">F1-Score (综合得分)</td><td class="text-right text-amber-300">33.33%</td><td class="text-right font-bold text-emerald-400">100.00%</td></tr>
+                <tr><td class="py-1.5">False Negative Rate (漏报率)</td><td class="text-right text-rose-400">80.00%</td><td class="text-right font-bold text-emerald-400">0.00%</td></tr>
               </tbody>
             </table>
           </div>
@@ -539,17 +549,17 @@
             <table class="w-full text-xs font-mono-code">
               <thead class="text-slate-400 border-b border-slate-800">
                 <tr>
-                  <th class="py-1.5 text-left">Metric</th>
+                  <th class="py-1.5 text-left">Metric / 指标</th>
                   <th class="py-1.5 text-right">Single-Prompt Baseline</th>
                   <th class="py-1.5 text-right text-sky-300">SpecGuard-Crew (MCP)</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-800/70">
-                <tr><td class="py-1.5">Recall (Sensitivity)</td><td class="text-right text-rose-400">8.33% (1/12)</td><td class="text-right font-bold text-sky-400">100.00% (12/12)</td></tr>
-                <tr><td class="py-1.5">Precision</td><td class="text-right">100.00%</td><td class="text-right font-bold text-sky-400">100.00%</td></tr>
-                <tr><td class="py-1.5">Specificity (Safe Controls)</td><td class="text-right">100.00% (8/8)</td><td class="text-right font-bold text-sky-400">100.00% (8/8)</td></tr>
-                <tr><td class="py-1.5">F1-Score</td><td class="text-right text-amber-300">15.38%</td><td class="text-right font-bold text-sky-400">100.00%</td></tr>
-                <tr><td class="py-1.5">Hallucination Escape (FNR)</td><td class="text-right text-rose-400">91.67%</td><td class="text-right font-bold text-sky-400">0.00%</td></tr>
+                <tr><td class="py-1.5">Recall (Sensitivity / 召回率)</td><td class="text-right text-rose-400">8.33% (1/12)</td><td class="text-right font-bold text-sky-400">100.00% (12/12)</td></tr>
+                <tr><td class="py-1.5">Precision (精确率)</td><td class="text-right">100.00%</td><td class="text-right font-bold text-sky-400">100.00%</td></tr>
+                <tr><td class="py-1.5">Specificity (安全样本特异度)</td><td class="text-right">100.00% (8/8)</td><td class="text-right font-bold text-sky-400">100.00% (8/8)</td></tr>
+                <tr><td class="py-1.5">F1-Score (综合得分)</td><td class="text-right text-amber-300">15.38%</td><td class="text-right font-bold text-sky-400">100.00%</td></tr>
+                <tr><td class="py-1.5">Hallucination Escape (漏报率)</td><td class="text-right text-rose-400">91.67%</td><td class="text-right font-bold text-sky-400">0.00%</td></tr>
               </tbody>
             </table>
           </div>
@@ -559,11 +569,111 @@
   </main>
 
   <script>
-    // Embedded Presets & Deterministic Verification Engine (works both standalone & with FastAPI backend)
+    let currentLang = "en";
+    let currentView = "app1";
+
+    const I18N = {
+      en: {
+        "i18n-header-subtitle": "One Lean Kiro 3-Agent Verification Skeleton (`packages/specguard_core`) Powering Two Distinct Applications",
+        "i18n-tab-app1": "🎃 App #1: RepoNecromancer",
+        "i18n-tab-app2": "🩺 App #2: MedEvidence-Checker",
+        "i18n-tab-kiro": "⚡ /.kiro Live Inspector",
+        "i18n-tab-bench": "📊 Evaluation Benchmarks",
+        "i18n-btn-autodemo": "🎬 Auto-Demo Tour",
+        "i18n-btn-stop-tour": "Stop Tour",
+        "i18n-ribbon-title": "Shared Kiro Crew Skeleton Pipeline",
+        "i18n-agent1-title": "1. ClaimExtractor (Agent #1)",
+        "i18n-agent1-desc": "Compiles EARS clauses from `.kiro/specs/` and decomposes artifact into atomic claims.",
+        "i18n-agent2-title": "2. CounterexampleHunter (Agent #2)",
+        "i18n-agent2-desc": "Invokes domain MCP tool (`run_property_test_sandbox` or `query_clinical_guidelines_db`) to hunt counterexamples.",
+        "i18n-agent3-title": "3. EvidenceAuditor (Agent #3)",
+        "i18n-agent3-desc": "Enforces Property 2 (Monotonic Severity Escalation) and synthesizes verified patches or clinical safety plans.",
+        "i18n-app1-heading": "🎃 App #1: RepoNecromancer",
+        "i18n-app1-preset-label": "Select Legacy / AI-Generated Code Preset:",
+        "i18n-app1-input-label": "Target Python Source Artifact (Editable):",
+        "i18n-app1-run-btn": "⚡ Run 3-Agent EARS + Hypothesis PBT Audit",
+        "i18n-app1-compare-title": "Why Single-Prompt LLM Review Fails Here",
+        "i18n-app1-base-label": "Single-Prompt Baseline:",
+        "i18n-app1-crew-label": "SpecGuard-Crew + PBT:",
+        "i18n-app1-status-label": "Audit Status:",
+        "i18n-app1-ears-label": "Compiled EARS Clauses:",
+        "i18n-app1-witness-heading": "Agent #2 (`CounterexampleHunter`) — Shrunk Falsifying Witnesses:",
+        "i18n-app1-patch-heading": "Agent #3 (`EvidenceAuditor`) — Synthesized & PBT-Verified Patch:",
+        "i18n-app2-heading": "🩺 App #2: MedEvidence-Checker",
+        "i18n-app2-preset-label": "Select Synthetic Clinical Vignette Preset (100% Zero-PHI):",
+        "i18n-app2-input-label": "Synthetic Clinical Note / Discharge Plan (Editable):",
+        "i18n-app2-run-btn": "🩺 Run 3-Agent Clinical Guideline & Contraindication Audit",
+        "i18n-app2-phys-heading": "Agent #1 (`ClaimExtractor`) — Structured Patient Physiology",
+        "i18n-phys-egfr": "Renal eGFR",
+        "i18n-phys-preg": "Pregnancy Status",
+        "i18n-phys-allergy": "Allergies",
+        "i18n-phys-orders": "Extracted Active Orders:",
+        "i18n-app2-status-label": "Clinical Safety Verdict:",
+        "i18n-app2-base-label": "Single-Prompt Baseline:",
+        "i18n-app2-witness-heading": "Agent #2 (`CounterexampleHunter`) — Guideline Contraindication Evidence:",
+        "i18n-ethics-title": "⚖️ Mandatory Ethics & Safety Disclosure (`Who Benefits, and Who Could Be Harmed`)",
+        "i18n-ethics-benefits": "<strong>Who Benefits:</strong> Junior hospital residents, clinical pharmacists, and primary care clinicians performing medication reconciliation; patients with impaired renal function (CKD stage 3–5), pregnancy, documented allergies, or complex polypharmacy.",
+        "i18n-ethics-harms": "<strong>Who Could Be Harmed & Guardrails:</strong> Over-reliance on automated checks (automation bias) could harm patients with rare metabolic conditions outside the knowledge base. This system enforces mandatory <strong>Human-in-the-Loop clinician sign-off</strong> and automatic SSN/PHI redaction.",
+        "i18n-kiro-heading": "⚡ Root `/.kiro` Directory Live Inspector (21 Compiled EARS Invariants)",
+        "i18n-kiro-sub": "Demonstrating complete Kiro feature coverage required by Kiroween 2026: Specs (EARS) · PBT · Steering · Hooks · Custom Agents (Kiro Crew) · MCP · Powers",
+        "i18n-kiro-table-title": "Live Compiled `VerificationDAG` Clauses (`packages/specguard_core/compiler.py`):",
+        "i18n-bench-heading": "📊 Reproducible Quantitative Evaluation (`benchmarks/run_evaluation.py`)",
+        "i18n-bench-sub": "Side-by-side comparison of Single-Prompt Baseline vs. SpecGuard-Crew across N=15 Code Defects and N=20 Synthetic Clinical Vignettes"
+      },
+      zh: {
+        "i18n-header-subtitle": "基于同一套 Kiro 三智能体形式化核查骨架（`packages/specguard_core`）驱动两个跨界独立应用",
+        "i18n-tab-app1": "🎃 应用 #1: RepoNecromancer 代码审计",
+        "i18n-tab-app2": "🩺 应用 #2: MedEvidence 临床循证核查",
+        "i18n-tab-kiro": "⚡ /.kiro 规约实时透视",
+        "i18n-tab-bench": "📊 定量评估基准对比",
+        "i18n-btn-autodemo": "🎬 自动演示巡礼",
+        "i18n-btn-stop-tour": "停止巡演",
+        "i18n-ribbon-title": "共享 Kiro Crew 三智能体核查流水线骨架",
+        "i18n-agent1-title": "1. ClaimExtractor（声明提取智能体 #1）",
+        "i18n-agent1-desc": "编译 `.kiro/specs/` 下的 EARS 形式化规约，并将输入代码或病历拆解为可证伪的原子声明。",
+        "i18n-agent2-title": "2. CounterexampleHunter（反例猎手智能体 #2）",
+        "i18n-agent2-desc": "调用领域 MCP 工具（`run_property_test_sandbox` 属性测试沙盒或 `query_clinical_guidelines_db` 临床指南库）搜寻反例。",
+        "i18n-agent3-title": "3. EvidenceAuditor（证据裁决智能体 #3）",
+        "i18n-agent3-desc": "严格执行正确性属性 2（单调严重度升级），合成经过属性验证的修复补丁或临床安全替代方案。",
+        "i18n-app1-heading": "🎃 应用 #1: RepoNecromancer（遗留代码规约与属性测试审计台）",
+        "i18n-app1-preset-label": "选择预设遗留代码 / AI 生成漏洞样本：",
+        "i18n-app1-input-label": "待审计 Python 源码（可直接编辑测试）：",
+        "i18n-app1-run-btn": "⚡ 运行三智能体 EARS 规约 + Hypothesis 属性测试审计",
+        "i18n-app1-compare-title": "为什么单次 Prompt 基线会漏检此类漏洞？",
+        "i18n-app1-base-label": "单次 Prompt 基线（Baseline）：",
+        "i18n-app1-crew-label": "SpecGuard-Crew + 属性测试：",
+        "i18n-app1-status-label": "审计裁决状态：",
+        "i18n-app1-ears-label": "已编译 EARS 规约条款数：",
+        "i18n-app1-witness-heading": "智能体 #2 (`CounterexampleHunter`) — Hypothesis 自动收缩的最小反例证据：",
+        "i18n-app1-patch-heading": "智能体 #3 (`EvidenceAuditor`) — 自动合成并通过属性测试验证的安全补丁：",
+        "i18n-app2-heading": "🩺 应用 #2: MedEvidence-Checker（临床指南与用药安全核查器）",
+        "i18n-app2-preset-label": "选择合成临床病例预设（100% 合成数据 · 零患者隐私 Zero-PHI）：",
+        "i18n-app2-input-label": "合成临床出院小结 / 医嘱方案（可直接编辑测试）：",
+        "i18n-app2-run-btn": "🩺 运行三智能体临床指南与禁忌症核查",
+        "i18n-app2-phys-heading": "智能体 #1 (`ClaimExtractor`) — 结构化提取患者生理指标",
+        "i18n-phys-egfr": "肾小球滤过率 eGFR",
+        "i18n-phys-preg": "妊娠状态",
+        "i18n-phys-allergy": "过敏史",
+        "i18n-phys-orders": "提取出的活跃医嘱药物：",
+        "i18n-app2-status-label": "临床安全裁决：",
+        "i18n-app2-base-label": "单次 Prompt 基线：",
+        "i18n-app2-witness-heading": "智能体 #2 (`CounterexampleHunter`) — 临床药理学指南禁忌证据：",
+        "i18n-ethics-title": "⚖️ 强制伦理与安全披露章节（`Who Benefits, and Who Could Be Harmed` / 受益方与潜在受损风险）",
+        "i18n-ethics-benefits": "<strong>受益人群（Who Benefits）：</strong> 进行医嘱核对的住院医师、临床药师及基层全科医生；合并肾功能不全（CKD 3–5 期）、妊娠期、明确药物过敏史或多重用药的高危患者群体。",
+        "i18n-ethics-harms": "<strong>潜在风险与安全护栏（Who Could Be Harmed & Guardrails）：</strong> 若临床医生对自动化核查产生过度依赖（自动化偏见），可能忽略规则库未覆盖的罕见代谢疾病。本系统强制要求<strong>临床医生人工复核签字（Human-in-the-Loop）</strong>，并内置 Zero-PHI 正则自动脱敏。",
+        "i18n-kiro-heading": "⚡ 根目录 `/.kiro` 实时规约透视面板（共编译 21 条 EARS 形式化不变量）",
+        "i18n-kiro-sub": "完整覆盖 Kiroween 2026 官方评分点名的 7 大 Kiro 核心能力：Specs (EARS) · PBT 属性测试 · Steering · Hooks · Custom Agents (Kiro Crew) · MCP · Powers",
+        "i18n-kiro-table-title": "实时编译生成的 `VerificationDAG` 规约节点（由 `packages/specguard_core/compiler.py` 驱动）：",
+        "i18n-bench-heading": "📊 可复现定量评估基准报告（`benchmarks/run_evaluation.py`）",
+        "i18n-bench-sub": "单次 Prompt 基线 vs. SpecGuard-Crew 在 15 组代码边界漏洞与 20 组合成临床病例上的精确率、召回率与 F1 对比"
+      }
+    };
+
     const APP1_PRESETS = [
       {
         id: "RN-PRESET-01",
         title: "Ghost Discount Overflow (Financial Invariant Bug)",
+        title_zh: "幽灵折扣溢出漏洞（金融守恒不变量违例）",
         code: "def calculate_checkout_total(price: float, discount_rate: float) -> float:\n    # AI-generated checkout helper without boundary invariant guards\n    return round(price * (1.0 - discount_rate), 2)\n",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -572,6 +682,7 @@
             severity: "CRITICAL",
             witness_input: "calculate_checkout_total(100.0, 1.5) -> -50.0",
             observed_outcome: "Financial conservation invariant violated (discount_rate=1.5 (>100% yields negative payable total)): returned `-50.0` outside `[0, 100.0]`.",
+            observed_outcome_zh: "违反金融守恒不变量（当 discount_rate=1.5 即折扣 >100% 时产生负数应付金额）：返回值 `-50.0` 超出合法区间 `[0, 100.0]`。",
             evidence_citation: "Hypothesis PBT Shrunk Counterexample: boundary value falsifies `0 <= final <= price`"
           }
         ],
@@ -580,6 +691,7 @@
       {
         id: "RN-PRESET-02",
         title: "Phantom Empty Telemetry (ZeroDivisionError on Empty Batch)",
+        title_zh: "空遥测批次除零崩溃（空列表 ZeroDivisionError）",
         code: "def compute_mean_latency(scores: list[float]) -> float:\n    total = sum(scores)\n    return total / len(scores)\n",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -588,6 +700,7 @@
             severity: "CRITICAL",
             witness_input: "compute_mean_latency([])",
             observed_outcome: "Unhandled ZeroDivisionError: division by zero when collection is empty.",
+            observed_outcome_zh: "未捕获的 ZeroDivisionError：当输入列表为空 `[]` 时触发除零崩溃。",
             evidence_citation: "Hypothesis PBT Shrunk Counterexample: `[]` -> ZeroDivisionError"
           }
         ],
@@ -596,6 +709,7 @@
       {
         id: "RN-PRESET-03",
         title: "Cryptographic Timing Oracle (CWE-208 Secret Leak)",
+        title_zh: "密码学时序侧信道泄露（CWE-208 签名比对漏洞）",
         code: "def verify_token(provided_sig: str, expected_sig: str) -> bool:\n    return provided_sig == expected_sig\n",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -604,6 +718,7 @@
             severity: "CRITICAL",
             witness_input: "provided_sig='a000...', expected_sig='a999...' (byte-by-byte timing oracle)",
             observed_outcome: "Standard `==` short-circuits on first mismatched byte, leaking secret MAC via timing side-channel.",
+            observed_outcome_zh: "普通 `==` 字符串比对在首个不匹配字节处短路返回，攻击者可通过逐字节时序侧信道还原密钥。",
             evidence_citation: "CWE-208 / EARS-RN-02: Non-constant-time cryptographic comparison"
           }
         ],
@@ -612,6 +727,7 @@
       {
         id: "RN-PRESET-04",
         title: "Necrotic Shell Conduit (CWE-78 OS Command Injection)",
+        title_zh: "高危 Shell 命令注入通道（CWE-78 shell=True）",
         code: "import subprocess\n\ndef export_log_bundle(filename: str) -> int:\n    proc = subprocess.Popen(f'tar -czf /tmp/out.tgz {filename}', shell=True)\n    return proc.wait()\n",
         baselineFlagged: true,
         status: "VIOLATION_DETECTED",
@@ -620,6 +736,7 @@
             severity: "CRITICAL",
             witness_input: "filename='report.txt; cat /etc/passwd'",
             observed_outcome: "Subprocess invoked with `shell=True` enables shell metacharacter injection.",
+            observed_outcome_zh: "使用 `shell=True` 拼接用户输入直接导致任意操作系统命令注入执行。",
             evidence_citation: "CWE-78 / EARS-RN-02: OS Command Injection via shell=True"
           }
         ],
@@ -628,6 +745,7 @@
       {
         id: "RN-PRESET-05",
         title: "Verified Safe Control: Guarded Metric Clamping",
+        title_zh: "安全对照组：带边界保护的指标限幅函数",
         code: "def calculate_safe_position(value: float) -> float:\n    if value < 0.0:\n        return 0.0\n    return min(value, 1000.0)\n",
         baselineFlagged: false,
         status: "VERIFIED_SAFE",
@@ -636,6 +754,7 @@
             severity: "SAFE",
             witness_input: "Hypothesis PBT (50 edge-case probes) + AST static verifier",
             observed_outcome: "Zero property violations or security sinks detected.",
+            observed_outcome_zh: "通过 50 组 Hypothesis 边界属性测试与 AST 静态安全扫描，零违例。",
             evidence_citation: "Verified against .kiro/specs/repo-necromancer/requirements.md"
           }
         ],
@@ -647,10 +766,11 @@
       {
         id: "MED-PRESET-01",
         title: "Stage 4 CKD Discharge Note (Metformin + Ibuprofen Renal Contraindication)",
+        title_zh: "CKD 4期肾衰出院小结（二甲双胍 + 布洛芬双重肾功能禁忌）",
         clinical_text: "Synthetic Vignette #1 (Zero-PHI): 68-year-old patient admitted for glycemic control and osteoarthritis flare. Labs today show serum creatinine 2.6 mg/dL, eGFR 22 mL/min/1.73m2. Allergies: NKDA. AI-Drafted Discharge Plan: Continue Metformin 1000 mg PO BID and start Ibuprofen 600 mg PO TID PRN knee pain.",
         egfr: "22 mL/min",
-        pregnant: "Non-Pregnant",
-        allergies: "NKDA",
+        pregnant: "Non-Pregnant / 未妊娠",
+        allergies: "NKDA / 无过敏",
         drugs: "ibuprofen, metformin",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -659,25 +779,30 @@
             severity: "CRITICAL",
             witness_input: "eGFR=22.0 mL/min/1.73m2 (< 30.0) + Prescribed: metformin",
             observed_outcome: "Impaired renal clearance of Metformin when eGFR < 30 mL/min/1.73m2 causes drug accumulation and life-threatening Metformin-Associated Lactic Acidosis (MALA).",
+            observed_outcome_zh: "当 eGFR < 30 mL/min/1.73m2 时二甲双胍肾脏清除严重受阻，导致药物蓄积并引发致命性二甲双胍相关乳酸酸中毒（MALA）。",
             evidence_citation: "[KDIGO-RENAL-001] FDA Boxed Warning & KDIGO 2022 Diabetes in CKD Guideline",
-            remediation_hint: "Discontinue Metformin immediately; consider Linagliptin (no renal dose adjustment required) or basal insulin titration."
+            remediation_hint: "Discontinue Metformin immediately; consider Linagliptin (no renal dose adjustment required) or basal insulin titration.",
+            remediation_hint_zh: "立即停用二甲双胍；建议改用无需根据肾功能调整剂量的利格列汀（Linagliptin）或基础胰岛素方案。"
           },
           {
             severity: "CRITICAL",
             witness_input: "eGFR=22.0 mL/min/1.73m2 (< 60.0) + Prescribed: ibuprofen",
             observed_outcome: "NSAIDs inhibit afferent arteriolar prostaglandin synthesis, precipitating acute-on-chronic kidney injury (AKI) and hyperkalemia in stage 3-5 CKD.",
+            observed_outcome_zh: "非甾体抗炎药（NSAIDs）抑制入球小动脉前列腺素合成，在 CKD 3-5 期患者中极易诱发急性肾损伤（AKI）与高钾血症。",
             evidence_citation: "[RENAL-NSAID-003] KDIGO CKD Management Guideline §3.4",
-            remediation_hint: "Discontinue systemic NSAID; substitute scheduled Acetaminophen (up to 2-3g/day) or topical analgesics."
+            remediation_hint: "Discontinue systemic NSAID; substitute scheduled Acetaminophen (up to 2-3g/day) or topical analgesics.",
+            remediation_hint_zh: "停用全身性 NSAID（布洛芬）；建议改用对乙酰氨基酚（Acetaminophen）或局部外用镇痛药。"
           }
         ]
       },
       {
         id: "MED-PRESET-02",
         title: "First-Trimester Hypertension & Anticoagulation (Teratogenic Regimen)",
+        title_zh: "孕早期高血压合并抗凝医嘱（赖诺普利 + 华法林严重致畸禁忌）",
         clinical_text: "Synthetic Vignette #2 (Zero-PHI): 29-year-old female at 8 weeks gestation (positive hCG, 1st trimester) presenting for chronic hypertension and history of DVT. eGFR 98 mL/min/1.73m2. Allergies: NKDA. AI-Drafted Plan: Continue Lisinopril 20 mg PO daily and Warfarin 5 mg PO daily.",
         egfr: "98 mL/min",
-        pregnant: "Pregnant (1st Tri)",
-        allergies: "NKDA",
+        pregnant: "Pregnant (1st Tri / 孕早期)",
+        allergies: "NKDA / 无过敏",
         drugs: "lisinopril, warfarin",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -686,25 +811,30 @@
             severity: "CRITICAL",
             witness_input: "Pregnant=True + Prescribed teratogen: lisinopril",
             observed_outcome: "ACE inhibitors disrupt fetal renin-angiotensin system development, causing oligohydramnios, fetal renal dysplasia, and skull hypoplasia.",
+            observed_outcome_zh: "ACEI 类降压药（赖诺普利）干扰胎儿肾素-血管紧张素系统发育，可导致羊水过少、胎儿肾发育不全及颅骨发育不良。",
             evidence_citation: "[OB-TERAT-001] FDA Boxed Warning & ACOG Practice Bulletin",
-            remediation_hint: "Discontinue Lisinopril immediately; transition to Labetalol, Nifedipine ER, or Methyldopa."
+            remediation_hint: "Discontinue Lisinopril immediately; transition to Labetalol, Nifedipine ER, or Methyldopa.",
+            remediation_hint_zh: "立即停用赖诺普利；改用妊娠期安全的拉贝洛尔（Labetalol）、硝苯地平控释片或甲基多巴。"
           },
           {
             severity: "CRITICAL",
             witness_input: "Pregnant=True + Prescribed teratogen: warfarin",
             observed_outcome: "Warfarin crosses the placenta and causes fetal warfarin syndrome and fetal CNS hemorrhage.",
+            observed_outcome_zh: "华法林可透过胎盘屏障，导致胎儿华法林综合征（鼻骨发育不良、骨骺点状钙化）及胎儿中枢神经出血。",
             evidence_citation: "[OB-TERAT-002] ACCP / ACOG Thromboembolism in Pregnancy Guideline",
-            remediation_hint: "Transition immediately to Low-Molecular-Weight Heparin (Enoxaparin), which does not cross the placenta."
+            remediation_hint: "Transition immediately to Low-Molecular-Weight Heparin (Enoxaparin), which does not cross the placenta.",
+            remediation_hint_zh: "立即转换为不透过胎盘的低分子肝素（依诺肝素 Enoxaparin）。"
           }
         ]
       },
       {
         id: "MED-PRESET-03",
         title: "Hidden Beta-Lactam Cross-Reactivity (Penicillin Anaphylaxis + Zosyn)",
+        title_zh: "隐蔽 β-内酰胺交叉过敏（青霉素过敏性休克史误开哌拉西林他唑巴坦）",
         clinical_text: "Synthetic Vignette #3 (Zero-PHI): 54-year-old patient with severe community-acquired pneumonia. eGFR 75 mL/min/1.73m2. Allergies: Penicillin (severe anaphylaxis and airway angioedema). AI-Drafted Order: Initiate Piperacillin / Zosyn 4.5 g IV q6h immediately.",
         egfr: "75 mL/min",
-        pregnant: "Non-Pregnant",
-        allergies: "Penicillin (Anaphylaxis)",
+        pregnant: "Non-Pregnant / 未妊娠",
+        allergies: "Penicillin (Anaphylaxis / 过敏休克)",
         drugs: "piperacillin, zosyn",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -713,18 +843,21 @@
             severity: "CRITICAL",
             witness_input: "Allergy=penicillin + Prescribed: piperacillin, zosyn",
             observed_outcome: "Direct beta-lactam re-exposure in a patient with documented Penicillin IgE-mediated anaphylaxis risks fatal anaphylactic shock.",
+            observed_outcome_zh: "患者有明确 IgE 介导的青霉素过敏性休克史，使用半合成青霉素（哌拉西林/Zosyn）存在致命性过敏性休克风险。",
             evidence_citation: "[ALG-BETA-001] AAAAI Drug Allergy Practice Parameter",
-            remediation_hint: "Use a non-beta-lactam alternative (e.g., Aztreonam or respiratory Fluoroquinolone)."
+            remediation_hint: "Use a non-beta-lactam alternative (e.g., Aztreonam or respiratory Fluoroquinolone).",
+            remediation_hint_zh: "立即改用非 β-内酰胺类抗菌方案（如氨曲南 Aztreonam 或呼吸喹诺酮类）。"
           }
         ]
       },
       {
         id: "MED-PRESET-04",
         title: "Lethal Serotonergic + MRSA Antimicrobial Clash (Sertraline + Linezolid)",
+        title_zh: "致命性 5-羟色胺综合征药物冲突（舍曲林 + 利奈唑胺）",
         clinical_text: "Synthetic Vignette #4 (Zero-PHI): 46-year-old non-pregnant patient with MRSA skin infection and major depression. eGFR 82 mL/min/1.73m2. Allergies: NKDA. AI-Drafted Medication Reconciliation: Continue home Sertraline 150 mg PO daily and start Linezolid 600 mg PO BID.",
         egfr: "82 mL/min",
-        pregnant: "Non-Pregnant",
-        allergies: "NKDA",
+        pregnant: "Non-Pregnant / 未妊娠",
+        allergies: "NKDA / 无过敏",
         drugs: "linezolid, sertraline",
         baselineFlagged: false,
         status: "VIOLATION_DETECTED",
@@ -733,18 +866,21 @@
             severity: "CRITICAL",
             witness_input: "Co-prescribed sertraline + linezolid",
             observed_outcome: "Concomitant serotonergic agent + MAOI (Linezolid) precipitates life-threatening Serotonin Syndrome (hyperthermia, clonus, autonomic instability).",
+            observed_outcome_zh: "利奈唑胺具有可逆性单胺氧化酶抑制剂（MAOI）活性，与 SSRI（舍曲林）联用会诱发危及生命的 5-羟色胺综合征。",
             evidence_citation: "[DDI-SERO-002] FDA Safety Communication & Dunkley Serotonin Toxicity Criteria",
-            remediation_hint: "Replace Linezolid with Vancomycin or Daptomycin for MRSA coverage."
+            remediation_hint: "Replace Linezolid with Vancomycin or Daptomycin for MRSA coverage.",
+            remediation_hint_zh: "将抗 MRSA 药物由利奈唑胺替换为万古霉素（Vancomycin）或达托霉素（Daptomycin）。"
           }
         ]
       },
       {
         id: "MED-PRESET-05",
         title: "Verified Safe Control: Renal-Adjusted CKD Diabetes & Pain Regimen",
+        title_zh: "安全对照组：CKD 4期经肾功能规范调整的降糖与镇痛方案",
         clinical_text: "Synthetic Vignette #5 (Zero-PHI): 71-year-old non-pregnant patient with Type 2 diabetes and knee osteoarthritis. Labs: eGFR 24 mL/min/1.73m2. Allergies: NKDA. Plan: Linagliptin 5 mg PO daily and Acetaminophen 500 mg PO TID PRN pain.",
         egfr: "24 mL/min",
-        pregnant: "Non-Pregnant",
-        allergies: "NKDA",
+        pregnant: "Non-Pregnant / 未妊娠",
+        allergies: "NKDA / 无过敏",
         drugs: "acetaminophen, linagliptin",
         baselineFlagged: false,
         status: "VERIFIED_SAFE",
@@ -753,8 +889,10 @@
             severity: "SAFE",
             witness_input: "Prescribed: linagliptin, acetaminophen (eGFR 24)",
             observed_outcome: "Compliant with KDIGO renal dosing, ACOG pregnancy rules, allergy cross-reactivity, and ISMP DDI guidelines.",
+            observed_outcome_zh: "完全符合 KDIGO 肾功能分级给药、ACOG 妊娠安全、过敏交叉反应及 ISMP 药物相互作用指南。",
             evidence_citation: "KDIGO / ACOG / ISMP / FDA Structured Pharmacology KB",
-            remediation_hint: ""
+            remediation_hint: "",
+            remediation_hint_zh: ""
           }
         ]
       }
@@ -771,23 +909,50 @@
       { spec: "med-evidence-checker", id: "EARS-03-5f0b", kw: "WHEN", text: "WHEN EvidenceAuditor generates a clinical AuditReport, THE MedEvidence-Checker SHALL attach a structured Who Benefits & Who Could Be Harmed disclosure." }
     ];
 
-    function initWorkbench() {
+    function populatePresetDropdowns() {
       const sel1 = document.getElementById("app1-preset-select");
+      const cur1 = sel1.value || 0;
+      sel1.innerHTML = "";
       APP1_PRESETS.forEach((p, idx) => {
         const opt = document.createElement("option");
         opt.value = idx;
-        opt.textContent = `${p.id}: ${p.title}`;
+        opt.textContent = `${p.id}: ${currentLang === "zh" ? p.title_zh : p.title}`;
         sel1.appendChild(opt);
       });
+      sel1.value = cur1;
 
       const sel2 = document.getElementById("app2-preset-select");
+      const cur2 = sel2.value || 0;
+      sel2.innerHTML = "";
       APP2_PRESETS.forEach((p, idx) => {
         const opt = document.createElement("option");
         opt.value = idx;
-        opt.textContent = `${p.id}: ${p.title}`;
+        opt.textContent = `${p.id}: ${currentLang === "zh" ? p.title_zh : p.title}`;
         sel2.appendChild(opt);
       });
+      sel2.value = cur2;
+    }
 
+    function toggleLanguage() {
+      currentLang = currentLang === "en" ? "zh" : "en";
+      const dict = I18N[currentLang];
+      Object.keys(dict).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (id.startsWith("i18n-ethics-")) {
+            el.innerHTML = dict[id];
+          } else {
+            el.textContent = dict[id];
+          }
+        }
+      });
+      populatePresetDropdowns();
+      renderApp1Report(APP1_PRESETS[document.getElementById("app1-preset-select").value || 0]);
+      renderApp2Report(APP2_PRESETS[document.getElementById("app2-preset-select").value || 0]);
+    }
+
+    function initWorkbench() {
+      populatePresetDropdowns();
       const tbody = document.getElementById("kiro-ears-tbody");
       COMPILED_EARS_SAMPLE.forEach(row => {
         const tr = document.createElement("tr");
@@ -802,9 +967,12 @@
 
       loadApp1Preset(0);
       loadApp2Preset(0);
+      const defaultView = window.SPECGUARD_DEFAULT_VIEW || "app1";
+      switchView(defaultView);
     }
 
     function switchView(view) {
+      currentView = view;
       ["app1", "app2", "kiro", "bench"].forEach(v => {
         document.getElementById(`view-${v}`).classList.toggle("hidden", v !== view);
       });
@@ -814,12 +982,18 @@
 
       if (view === "app2") {
         body.className = "min-h-screen bg-slate-100 text-slate-900";
-        badge.textContent = "Active Adapter: `ClinicalAuditDomainAdapter` (`apps/med-evidence-checker` · Zero-PHI)";
+        badge.textContent = currentLang === "zh"
+          ? "当前挂载适配器：`ClinicalAuditDomainAdapter` (`apps/med-evidence-checker` · Zero-PHI)"
+          : "Active Adapter: `ClinicalAuditDomainAdapter` (`apps/med-evidence-checker` · Zero-PHI)";
       } else {
         body.className = "min-h-screen bg-[#070a0e] text-slate-100 crt-scanlines";
         badge.textContent = view === "app1"
-          ? "Active Adapter: `CodeAuditDomainAdapter` (`apps/repo-necromancer` · Hypothesis PBT)"
-          : "Active Inspector: Root `/.kiro` Specification & Benchmark Engine";
+          ? (currentLang === "zh"
+              ? "当前挂载适配器：`CodeAuditDomainAdapter` (`apps/repo-necromancer` · Hypothesis PBT)"
+              : "Active Adapter: `CodeAuditDomainAdapter` (`apps/repo-necromancer` · Hypothesis PBT)")
+          : (currentLang === "zh"
+              ? "当前透视面板：根目录 `/.kiro` 形式化规约与定量评估引擎"
+              : "Active Inspector: Root `/.kiro` Specification & Benchmark Engine");
       }
     }
 
@@ -849,7 +1023,6 @@
         }
       } catch (_) {}
 
-      // Fallback client-side evaluation if running as standalone static file
       const idx = document.getElementById("app1-preset-select").value;
       renderApp1Report(APP1_PRESETS[idx] || APP1_PRESETS[0]);
     }
@@ -857,32 +1030,39 @@
     function renderApp1Report(p) {
       const pill = document.getElementById("app1-status-pill");
       if (p.status === "VERIFIED_SAFE") {
-        pill.textContent = "VERIFIED_SAFE";
+        pill.textContent = currentLang === "zh" ? "VERIFIED_SAFE (验证安全)" : "VERIFIED_SAFE";
         pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
       } else {
-        pill.textContent = "VIOLATION_DETECTED";
+        pill.textContent = currentLang === "zh" ? "VIOLATION_DETECTED (检出规约违例)" : "VIOLATION_DETECTED";
         pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-500/20 text-rose-300 border border-rose-500/40";
       }
 
       document.getElementById("app1-baseline-badge").textContent =
-        p.status === "VERIFIED_SAFE" ? "SAFE (True Negative)" : (p.baselineFlagged ? "FLAGGED (Obvious Sink)" : "MISSED (False Negative)");
+        p.status === "VERIFIED_SAFE"
+          ? (currentLang === "zh" ? "安全 (True Negative)" : "SAFE (True Negative)")
+          : (p.baselineFlagged
+              ? (currentLang === "zh" ? "检出明显特征" : "FLAGGED (Obvious Sink)")
+              : (currentLang === "zh" ? "漏检 (False Negative)" : "MISSED (False Negative)"));
       document.getElementById("app1-crew-badge").textContent =
-        p.status === "VERIFIED_SAFE" ? "VERIFIED SAFE (0 FP)" : "CAUGHT + SHRINK-PROVED";
+        p.status === "VERIFIED_SAFE"
+          ? (currentLang === "zh" ? "验证通过 (0 误报)" : "VERIFIED SAFE (0 FP)")
+          : (currentLang === "zh" ? "精准拦截 + 自动生成补丁" : "CAUGHT + SHRINK-PROVED");
 
       const list = document.getElementById("app1-witness-list");
       list.innerHTML = "";
       p.witnesses.forEach(w => {
         const card = document.createElement("div");
         const isSafe = w.severity === "SAFE";
+        const outcomeText = (currentLang === "zh" && w.observed_outcome_zh) ? w.observed_outcome_zh : w.observed_outcome;
         card.className = `rounded-lg p-3 border text-xs font-mono-code ${
           isSafe ? "bg-emerald-950/30 border-emerald-500/30 text-emerald-200" : "bg-rose-950/30 border-rose-500/40 text-rose-200"
         }`;
         card.innerHTML = `
           <div class="flex items-center justify-between font-bold mb-1">
-            <span>[${w.severity}] Counterexample Input: <code>${w.witness_input}</code></span>
+            <span>[${w.severity}] Counterexample: <code>${w.witness_input}</code></span>
             <span class="text-[11px] opacity-80">MCP: run_property_test_sandbox</span>
           </div>
-          <p class="text-slate-300">${w.observed_outcome}</p>
+          <p class="text-slate-300">${outcomeText}</p>
           <div class="mt-1 text-[11px] text-purple-300">Citation: ${w.evidence_citation}</div>
         `;
         list.appendChild(card);
@@ -933,20 +1113,26 @@
 
       const pill = document.getElementById("app2-status-pill");
       if (p.status === "VERIFIED_SAFE") {
-        pill.textContent = "VERIFIED_SAFE";
+        pill.textContent = currentLang === "zh" ? "VERIFIED_SAFE (符合临床指南)" : "VERIFIED_SAFE";
         pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-emerald-100 text-emerald-800 border border-emerald-300";
       } else {
-        pill.textContent = "VIOLATION_DETECTED";
+        pill.textContent = currentLang === "zh" ? "VIOLATION_DETECTED (检出高危用药禁忌)" : "VIOLATION_DETECTED";
         pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-100 text-rose-800 border border-rose-300";
       }
 
       document.getElementById("app2-baseline-pill").textContent =
-        p.status === "VERIFIED_SAFE" ? "SAFE (True Negative)" : (p.baselineFlagged ? "FLAGGED" : "MISSED (Silent Hallucination)");
+        p.status === "VERIFIED_SAFE"
+          ? (currentLang === "zh" ? "安全 (True Negative)" : "SAFE (True Negative)")
+          : (p.baselineFlagged
+              ? "FLAGGED"
+              : (currentLang === "zh" ? "漏检 (静默临床幻觉)" : "MISSED (Silent Hallucination)"));
 
       const list = document.getElementById("app2-witness-list");
       list.innerHTML = "";
       p.witnesses.forEach(w => {
         const isSafe = w.severity === "SAFE";
+        const outcomeText = (currentLang === "zh" && w.observed_outcome_zh) ? w.observed_outcome_zh : w.observed_outcome;
+        const hintText = (currentLang === "zh" && w.remediation_hint_zh) ? w.remediation_hint_zh : w.remediation_hint;
         const card = document.createElement("div");
         card.className = `rounded-lg p-3.5 border text-xs ${
           isSafe ? "bg-emerald-50 border-emerald-300 text-emerald-950" : "bg-rose-50 border-rose-300 text-rose-950"
@@ -956,40 +1142,45 @@
             <span>[${w.severity}] ${w.witness_input}</span>
             <span class="text-[11px] text-sky-800">MCP: query_clinical_guidelines_db</span>
           </div>
-          <p class="text-slate-800 mb-1.5">${w.observed_outcome}</p>
+          <p class="text-slate-800 mb-1.5">${outcomeText}</p>
           <div class="text-[11px] font-mono-code text-slate-600">Guideline Citation: ${w.evidence_citation}</div>
-          ${w.remediation_hint ? `<div class="mt-2 pt-2 border-t border-rose-200 font-semibold text-emerald-900">✅ Recommended Safe Regimen: ${w.remediation_hint}</div>` : ""}
+          ${hintText ? `<div class="mt-2 pt-2 border-t border-rose-200 font-semibold text-emerald-900">✅ ${currentLang === "zh" ? "推荐安全替代方案：" : "Recommended Safe Regimen: "}${hintText}</div>` : ""}
         `;
         list.appendChild(card);
       });
     }
 
-    // Automated 5-Scene Guided Demo Tour for Video Recording & Judges
+    // Automated 5-Scene Guided Demo Tour (Bilingual)
     let autoDemoTimer = null;
     const AUTO_DEMO_SCENES = [
       {
         badge: "SCENE 1 / 5 · App #1 RepoNecromancer",
-        caption: "App #1 (`apps/repo-necromancer`): Hypothesis PBT shrinks `discount_rate=1.5` boundary bug that single-prompt review misses, and synthesizes a verified patch.",
+        caption_en: "App #1 (`apps/repo-necromancer`): Hypothesis PBT shrinks `discount_rate=1.5` boundary bug that single-prompt review misses, and synthesizes a verified patch.",
+        caption_zh: "第一幕 · 应用 #1 (`apps/repo-necromancer`)：Hypothesis 属性测试自动收缩出单次 Prompt 漏检的 `discount_rate=1.5` 负数金额漏洞，并生成安全补丁。",
         action: () => { switchView("app1"); document.getElementById("app1-preset-select").value = 0; loadApp1Preset(0); }
       },
       {
         badge: "SCENE 2 / 5 · App #1 Cryptographic Timing Audit",
-        caption: "App #1 (`apps/repo-necromancer`): Detects non-constant-time `==` token verification (CWE-208) and patches it with `hmac.compare_digest`.",
+        caption_en: "App #1 (`apps/repo-necromancer`): Detects non-constant-time `==` token verification (CWE-208) and patches it with `hmac.compare_digest`.",
+        caption_zh: "第二幕 · 应用 #1：检出非恒定时间的 `==` 签名比对漏洞（CWE-208），自动替换为 `hmac.compare_digest`。",
         action: () => { switchView("app1"); document.getElementById("app1-preset-select").value = 2; loadApp1Preset(2); }
       },
       {
-        badge: "SCENE 3 / 5 · App #2 MedEvidence-Checker (Same Skeleton!)",
-        caption: "Switching to App #2 (`apps/med-evidence-checker`): Same 3-agent Kiro Crew skeleton now audits a Stage 4 CKD discharge note (eGFR 22), catching Metformin lactic acidosis & NSAID AKI risks.",
+        badge: "SCENE 3 / 5 · App #2 MedEvidence-Checker",
+        caption_en: "Switching to App #2 (`apps/med-evidence-checker`): Same 3-agent Kiro Crew skeleton audits a Stage 4 CKD discharge note (eGFR 22), catching Metformin & NSAID risks.",
+        caption_zh: "第三幕 · 切换至应用 #2 (`apps/med-evidence-checker`)：同一套三智能体骨架核查 CKD 4期（eGFR 22）病历，精准拦截二甲双胍乳酸酸中毒与布洛芬肾损伤风险。",
         action: () => { switchView("app2"); document.getElementById("app2-preset-select").value = 0; loadApp2Preset(0); }
       },
       {
         badge: "SCENE 4 / 5 · Root /.kiro Live Inspector",
-        caption: "Inside `/.kiro`: 21 compiled EARS clauses across 3 specs, 3 Agent Hooks, 3 Steering Docs, Kiro Crew agents, MCP server, and Kiro Power.",
+        caption_en: "Inside `/.kiro`: 21 compiled EARS clauses across 3 specs, 3 Agent Hooks, 3 Steering Docs, Kiro Crew agents, MCP server, and Kiro Power.",
+        caption_zh: "第四幕 · 根目录 `/.kiro` 实时透视：完整展示 21 条编译后的 EARS 规约、3 个自动化 Hooks、3 份 Steering 引导文档、Kiro Crew 智能体、MCP 服务与 Kiro Power。",
         action: () => { switchView("kiro"); }
       },
       {
-        badge: "SCENE 5 / 5 · Reproducible Quantitative Evaluation",
-        caption: "Quantitative Evaluation (`benchmarks/run_evaluation.py`): SpecGuard-Crew achieves 100% Recall & 100% F1 on both Code (N=15) and Clinical (N=20) benchmarks vs. 20% / 8.33% for the Single-Prompt Baseline.",
+        badge: "SCENE 5 / 5 · Quantitative Evaluation Benchmarks",
+        caption_en: "Quantitative Evaluation (`benchmarks/run_evaluation.py`): SpecGuard-Crew achieves 100% Recall & 100% F1 on both Code (N=15) and Clinical (N=20) benchmarks.",
+        caption_zh: "第五幕 · 可复现定量评估基准：SpecGuard-Crew 在 15 组代码漏洞与 20 组合成临床病例上均取得 100% 召回率与 100% F1，大幅超越单次 Prompt 基线。",
         action: () => { switchView("bench"); }
       }
     ];
@@ -1006,7 +1197,7 @@
       const runScene = () => {
         const s = AUTO_DEMO_SCENES[idx];
         document.getElementById("autodemo-step-badge").textContent = s.badge;
-        document.getElementById("autodemo-caption").textContent = s.caption;
+        document.getElementById("autodemo-caption").textContent = currentLang === "zh" ? s.caption_zh : s.caption_en;
         s.action();
         idx = (idx + 1) % AUTO_DEMO_SCENES.length;
       };

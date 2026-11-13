@@ -1,5 +1,7 @@
 # SpecGuard-Crew: Spec-Driven Multi-Agent Verification Skeleton
 
+> 🌐 **Language / 语言**: **[English](README.md) | [简体中文](README_ZH.md)** (Interactive Web Workbench also includes a live **🌐 中文 / EN** toggle)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Kiro Specs](https://img.shields.io/badge/.kiro-21_EARS_Invariants-purple.svg)](.kiro/specs/)
 [![Hypothesis PBT](https://img.shields.io/badge/Hypothesis_PBT-6_Properties_Verified-amber.svg)](tests/test_skeleton_properties.py)
