@@ -1,149 +1,112 @@
-# 🛡️ SpecGuard-Crew（规格守卫者小队）
+# 🩺 MedEvidence-Checker：零隐私泄露（Zero-PHI）临床出院医嘱与循证药理学安全审计系统
 
-<div align="center">
-
-**[English](README.md) | [简体中文](README_ZH.md)**
+> 🌐 **语言切换 / Language**: **[English](README.md) | [简体中文](README_ZH.md)**（交互式临床 Web 工作台顶部内置 **🌐 中文 / EN** 实时双语切换按钮）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Kiro Specs](https://img.shields.io/badge/.kiro-7%2F7%20完整特性闭环-purple.svg)](.kiro/)
-[![Tests](https://img.shields.io/badge/pytest-13%20passed%20%7C%20Hypothesis%20PBT-brightgreen.svg)](tests/)
-[![Kiroween 2026](https://img.shields.io/badge/Kiroween%202026-Skeleton%20Crew-orange.svg)](docs/devpost_submission_kiroween.md)
-[![AI for Medicine](https://img.shields.io/badge/AI%20for%20Medicine-临床安全审计-sky.svg)](docs/devpost_submission_ai_medicine.md)
+[![AI for Medicine 2026](https://img.shields.io/badge/AI_for_Medicine_2026-临床决策安全审计-sky.svg)](docs/devpost_submission_ai_medicine.md)
+[![Clinical Benchmark](https://img.shields.io/badge/N%3D20_临床评测-100%25_召回率_%7C_0%25_误报率-brightgreen.svg)](benchmarks/evaluation_results.md)
+[![Zero-PHI](https://img.shields.io/badge/隐私保护-100%25_Zero_PHI_纯本地离线运行-blue.svg)](.kiro/steering/product.md)
 
-**面向高风险代码修复与临床指南核查的「规格驱动多智能体 + 反例证人审计」通用骨架（Universal Spec-Driven Multi-Agent Counterexample & Evidence Auditing Skeleton）**
+> **[AI for Medicine: A Global Student Hackathon on the Future of Care](https://ai-for-medicine.devpost.com/) 参赛项目官方仓库（`MedEvidence-Checker`，底层由 `SpecGuard-Crew` 形式化核查骨架驱动）。**
 
-*一套 `.kiro` 核心骨架 · 两个截然不同的垂直领域应用 · 确定性反例证人（Witness）证明*
-
-</div>
+**MedEvidence-Checker（临床循证核查台）** 是一套确定性、带循证等级引文的临床决策支持（CDS）与出院医嘱安全审计系统。传统的单次黑盒大语言模型（LLM）提示词在我们的 `N=20` 临床安全评测集中漏掉了 **91.67%** 的定量肾功能/妊娠/过敏交叉禁忌；而 **MedEvidence-Checker** 将临床出院小结拆解为形式化的 **EARS（`WHEN ... THE SYSTEM SHALL ...`）** 核查义务，并通过本地模型上下文协议（`MCP`）药理学引擎对每一条处方医嘱进行针对权威指南（`KDIGO 2024`、`ACOG`、`AAAAI`、`ISMP`）的确定性反例审计。
 
 ---
 
-## 🌟 项目简介（Executive Summary）
+## 1. 临床痛点与目标用户（Problem and User）
 
-大语言模型（LLM）在生成代码补丁或起草临床出院医嘱时看起来非常流畅，但极易产生**静默幻觉（Silent Hallucinations）**：例如在除零边界、非单调阶梯定价上崩溃，或者在慢性肾病（CKD Stage 4，`eGFR < 30 mL/min/1.73m²`）患者出院小结中开出引发致命乳酸酸中毒的二甲双胍（Metformin）。
+### 核心临床痛点：出院交接环节中的「静默用药禁忌」
+患者出院是医疗全流程中风险最高的交接节点之一。当住院医师或单次提示词 AI 医疗文书助手在高强度时间压力下起草出院小结时，涉及多变量的定量用药禁忌极易被遗漏：
+- **肾功能不全清除率禁忌**：当患者最新化验显示 `eGFR = 22 mL/min/1.73m²`（慢性肾病 CKD 4 期）时，仍继续开具 `Metformin（二甲双胍 850 mg BID）` 或 `Ibuprofen（布洛芬 600 mg TID）`，极易诱发致命性乳酸酸中毒或急性肾损伤（`KDIGO 2024` 指南明确禁用）。
+- **妊娠早期致畸药物暴露**：对妊娠早期（First-trimester）患者继续开具血管紧张素转化酶抑制剂 `Lisinopril（赖诺普利）` 或 `Warfarin（华法林）`（`ACOG` 指南禁用）。
+- **$\beta$-内酰胺类抗生素过敏交叉反应**：对明确记录有 `Penicillin（青霉素过敏性休克史）` 的患者开具 `Piperacillin-Tazobactam（哌拉西林他唑巴坦 / Zosyn）` 或阿莫西林（`AAAAI` 药物过敏指南高危拦截）。
+- **致命性药物相互作用（DDI）**：同时开具选择性 5-羟色胺再摄取抑制剂 `Sertraline（舍曲林）` 与具有单胺氧化酶抑制剂（MAOI）活性的抗生素 `Linezolid（利奈唑胺）`，引发危及生命的 5-羟色胺综合征（`ISMP` 高危用药清单）。
 
-**SpecGuard-Crew** 将单次黑盒提示词替换为一套受 **Kiro 规格驱动开发（Spec-Driven Development）** 约束的 **3-Agent 形式化核查流水线**：
-
-1. **ClaimExtractor（断言提取智能体）**：将非结构化代码/临床出院记录与 `.kiro/specs/**/requirements.md` 中的 EARS 规格共同编译为带类型的 `VerificationObligation`（核查义务 DAG）。
-2. **CounterexampleHunter（反例猎手智能体）**：通过 **Model Context Protocol (MCP)** 工具主动搜寻能够推翻不安全假设的确定性反例（通过 Hypothesis 属性测试沙盒或权威临床药理学规则库）。
-3. **EvidenceAuditor（证据审计智能体）**：基于确定性 `CounterexampleWitness`（反例证人）合成安全修复方案，并在二次复核确认 `0 VIOLATED` 后签发密码学 SHA-256 `AuditCertificate`（审计证书）。
+### 目标用户群体
+1. **住院医师与主治医师（Residents & Hospitalists）**：在签署出院小结前，获得亚毫秒级、附带权威指南条款引文的自动审方核查。
+2. **临床药师（Clinical Pharmacists）**：利用高精准度的用药重整（Medication Reconciliation）消除传统医院系统烦人的假阳性弹窗（在安全对照组上实现 `0.0%` 误报率）。
+3. **出院患者与家属照护者（Patients & Caregivers）**：获得**中英双语**、通俗易懂的 **「患者用药安全核对清单（Patient Safety Checklist）」**，清晰了解出院取药前应向主治医生确认的关键安全问题。
 
 ---
 
-## 🏛️ 架构总览：一套通用骨架驱动两个独立应用
+## 2. 核心方法与基线对比（Method and Comparison to a Simple Baseline）
+
+### 系统架构图
 
 ```mermaid
-flowchart TB
-    subgraph KiroLayer["📁 根目录 /.kiro/（7 项 Kiro 原生能力全覆盖）"]
-        Specs["specs/<br/>EARS 需求与 6 项形式化正确性属性"]
-        Steering["steering/<br/>产品、技术与架构约束"]
-        Hooks["hooks/<br/>规格同步与 PBT 守护钩子"]
-        Agents["agents/<br/>3-Agent 角色与流水线拓扑"]
-        MCPConf["mcp/mcp.json<br/>本地 Stdio MCP 工具注册"]
-        Powers["powers/<br/>SpecGuard 核查能力包"]
-    end
-
-    subgraph CoreSkeleton["🦴 packages/specguard_core & specguard_mcp_server"]
-        Compiler["EARS 规格编译器<br/>(compiler.py)"]
-        Orchestrator["CrewOrchestrator<br/>ClaimExtractor → Hunter → Auditor"]
-        MCPServer["SpecGuard MCP Server<br/>AST/Hypothesis 沙盒 + 临床规则库"]
-    end
-
-    subgraph App1["🧟 应用 #1：apps/repo-necromancer（软件工程）"]
-        App1UI["暗黑极客终端（Spooky Terminal）<br/>挖掘隐藏边界崩溃 + AST 补丁自愈"]
-    end
-
-    subgraph App2["🩺 应用 #2：apps/med-evidence-checker（临床医疗）"]
-        App2UI["临床精准审计台（Clinical Dashboard）<br/>用药禁忌/相互作用拦截 + 患者安全清单"]
-    end
-
-    KiroLayer --> CoreSkeleton
-    CoreSkeleton --> App1
-    CoreSkeleton --> App2
+flowchart LR
+    Note["脱敏临床出院小结<br/>(100% Zero-PHI)"] --> EARS["EARS 规格编译器<br/>(.kiro/specs/med-evidence-checker)"]
+    EARS --> Agent1["智能体 1：ClaimExtractor<br/>提取 eGFR、妊娠状态、过敏史与处方"]
+    Agent1 --> Agent2["智能体 2：CounterexampleHunter<br/>调用 MCP：query_clinical_guidelines_db"]
+    Agent2 --> KB["确定性临床药理规则库<br/>(KDIGO / ACOG / AAAAI / ISMP)"]
+    KB --> Agent3["智能体 3：EvidenceAuditor<br/>生成指南引文修正方案 + SHA-256 审计证书"]
+    Agent3 --> Output["临床精准审计台 UI<br/>+ 双语患者安全清单 (中文 / EN)"]
 ```
 
-| 维度 | 通用骨架（`packages/specguard_core`） | 🧟 应用 #1：`Repo-Necromancer`（[`apps/repo-necromancer`](apps/repo-necromancer/)） | 🩺 应用 #2：`MedEvidence-Checker`（[`apps/med-evidence-checker`](apps/med-evidence-checker/)） |
-| :--- | :--- | :--- | :--- |
-| **所属领域** | 领域无关的规格编译与 3-Agent 编排引擎 | 软件工程 / 遗留代码自愈与属性测试验证 | 临床医疗安全 / 出院医嘱与循证指南核查 |
-| **输入载体** | `ArtifactBundle` + `.kiro/specs/` EARS 条款 | 含隐蔽缺陷的 Python 函数 + 不变量契约 | 脱敏（Zero-PHI）临床出院小结 + 实验室指标 + 用药列表 |
-| **MCP 核查工具** | JSON-RPC Stdio / 内存工具桥接 | `run_property_fuzz_check`（AST + Hypothesis 属性反例搜索） | `check_clinical_guidelines`（KDIGO / ADA / AHA / ATS 循证规则库） |
-| **反例证人（Witness）** | `CounterexampleWitness` | 触发崩溃或违反不变量的最小输入字典（如 `{"total": 0.0, "part": 15.0}`） | 触发禁忌的生物标志物/药物冲突及指南引文（如 `eGFR=22 < 30` 禁用二甲双胍） |
-| **修复产物** | `AuditCertificate`（含 SHA-256 签名） | 经过二次 PBT 复核通过的 AST 自愈安全代码补丁 | 经指南核查的临床医嘱修正方案 + 面向患者的双语通俗复查清单 |
+### 为什么我们的方法显著优于单次提示词基线（Simple Baseline）
+- **单次提示词基线（`baseline_single_pass_clinical`）**：仅通过单次文本扫描检查病历中是否直接写有 `"contraindicated"` 或 `"allergy warning"` 等字面提示。一旦风险需要跨段落关联定量化验值（如将实验室检查中的 `eGFR = 22` 与医嘱列表中的 `Metformin` 关联）或药理学分类映射（如将 `Penicillin` 过敏映射到 `Piperacillin`），单次基线就会发生静默漏报。
+- **MedEvidence-Checker（`SpecGuard-Crew` 3-Agent + MCP 协同核查）**：
+  1. **`ClaimExtractor`（断言提取智能体）**：从非结构化出院小结中提取结构化生理指标（`eGFR`、妊娠状态、过敏原列表、拟开具处方）并绑定至编译后的 EARS 核查义务（`MED-REQ-001` 至 `MED-REQ-007`）。
+  2. **`CounterexampleHunter`（反例猎手智能体）**：调用本地 MCP 工具 `query_clinical_guidelines_db`（[`packages/specguard_mcp_server/tools_clinical_kb.py`](packages/specguard_mcp_server/tools_clinical_kb.py)），构造包含确切化验阈值冲突和指南引文（`Evidence Grade A`）的确定性反例证人（`CounterexampleWitness`）。
+  3. **`EvidenceAuditor`（证据审计智能体）**：基于反例证人合成符合指南的安全替代医嘱，强制注入非处方伦理安全声明（`Property 6`），并对修正后的出院小结执行二次核查，确保 `0 VIOLATED` 后签发 SHA-256 审计证书。
 
 ---
 
-## ⚙️ 根目录 `/.kiro` 全景能力矩阵（7/7 项 Kiro 特性）
+## 3. 定量评测（Evaluation：`N = 20` 脱敏临床安全基准集）
 
-评委可直接查看仓库根目录下的 [`/.kiro/`](.kiro/)（已在 `.gitignore` 中通过 `!.kiro/**` 显式保护）或在 Web 工作台的 **「🔍 .kiro 实时检视器」** 标签页中在线浏览全部 21 个文件：
+我们在 [`benchmarks/dataset_clinical_cases.json`](benchmarks/dataset_clinical_cases.json) 中构建了 `N = 20` 例 100% 脱敏（`Zero-PHI`）的临床出院案例（包含 `12` 例涵盖肾功能不全、妊娠致畸、过敏交叉反应及致命药物相互作用的高危案例 + `8` 例安全处方对照案例）。
 
-| Kiro 特性 | 仓库路径 | 核心作用 |
-| :--- | :--- | :--- |
-| **1. Specs（EARS 规格）** | [`.kiro/specs/`](.kiro/specs/) | 包含 `skeleton-core`、`repo-necromancer`、`med-evidence-checker` 三个模块的 `requirements.md`（共 **21 条编译型 EARS 需求**）、`design.md` 与 `tasks.md`。 |
-| **2. Correctness Properties（正确性属性）** | [`.kiro/specs/skeleton-core/design.md`](.kiro/specs/skeleton-core/design.md) | 形式化定义 `Property 1` 至 `Property 6`（确定性编译、反例可靠性、证据链完整性、双应用同构性、补丁复核、零隐私泄露）。 |
-| **3. Steering（引导规则）** | [`.kiro/steering/`](.kiro/steering/) | `product.md`、`tech.md`、`structure.md` 强制执行反例优先、双应用解耦与 Zero-PHI 安全底线。 |
-| **4. Agent Hooks（自动化钩子）** | [`.kiro/hooks/`](.kiro/hooks/) | 规格变更同步校验、代码修改自动触发 Hypothesis 属性测试、评测基准修改自动更新 Markdown 报表。 |
-| **5. Custom Agents（自定义多智能体）** | [`.kiro/agents/`](.kiro/agents/) | 定义 `claim-extractor`、`counterexample-hunter`、`evidence-auditor` 三个智能体及 `crew-pipeline.yaml` 编排契约。 |
-| **6. MCP（模型上下文协议）** | [`.kiro/mcp/mcp.json`](.kiro/mcp/mcp.json) | 注册本地 `specguard-verification-mcp` 标准输入输出服务器及其 3 个确定性核查工具。 |
-| **7. Kiro Powers（能力包）** | [`.kiro/powers/specguard-verification-power/POWER.md`](.kiro/powers/specguard-verification-power/POWER.md) | 打包可复用的「规格驱动反例核查」工作流能力包。 |
-
----
-
-## 📊 定量评测：SpecGuard-Crew vs. 单次直接提示词基线（Simple Baseline）
-
-遵循高标准科研与工程复现规范，我们在 [`benchmarks/`](benchmarks/) 下构建了 **40 个测试用例**（20 个隐蔽代码缺陷 + 20 个脱敏临床用药风险案例），将 **Simple Baseline（单次直接提示词生成/审查）** 与 **SpecGuard-Crew（EARS 规格 + 3-Agent + MCP 反例工具）** 进行定量对比。
-
-运行以下命令即可在 2 秒内完整复现实验结果：
-
+只需运行以下命令即可在 2 秒内复现全部评测指标：
 ```bash
 python3 benchmarks/run_evaluation.py
 ```
 
-### 1. 应用 #1（`Repo-Necromancer`）评测结果（`N = 20` 隐蔽代码缺陷）
-
-| 指标（Metric） | 单次提示词基线（Simple Baseline） | **SpecGuard-Crew（我们的方案）** | 绝对提升（$\Delta$） |
+| 评测指标（`N = 20` 临床出院案例） | 单次直接提示词基线（Simple Baseline） | **MedEvidence-Checker（我们的方案）** | 绝对提升幅度（$\Delta$） |
 | :--- | :---: | :---: | :---: |
-| **真实边界缺陷召回率（Recall / Catch Rate）** | 25.00% (3/12) | **100.00% (12/12)** | **+75.00%** |
-| **精确率（Precision）** | 100.00% | **100.00%** | — |
-| **F1 分数（F1 Score）** | 40.00% | **100.00%** | **+60.00%** |
-| **误报率（False Positive Rate）** | 0.00% (0/8) | **0.00% (0/8)** | **0.00%（零误报）** |
-| **自愈补丁属性测试通过率（Verified Patch Rate）** | 0.00% (0/12) | **100.00% (12/12)** | **+100.00%** |
-| **平均核查耗时（Mean Latency）** | 0.01 ms | **1.09 ms** | 亚毫秒/毫秒级确定性验证 |
-
-### 2. 应用 #2（`MedEvidence-Checker`）评测结果（`N = 20` 脱敏临床安全案例）
-
-| 指标（Metric） | 单次提示词基线（Simple Baseline） | **SpecGuard-Crew（我们的方案）** | 绝对提升（$\Delta$） |
-| :--- | :---: | :---: | :---: |
-| **高危禁忌/相互作用检出率（Recall）** | 8.33% (1/12) | **100.00% (12/12)** | **+91.67%** |
-| **精确率（Precision）** | 100.00% | **100.00%** | — |
-| **F1 分数（F1 Score）** | 15.38% | **100.00%** | **+84.62%** |
-| **假阳性告警疲劳率（False Positive Rate）** | 0.00% (0/8) | **0.00% (0/8)** | **0.00%（零误报）** |
-| **权威指南引文覆盖率（Citation Coverage）** | 0.00% (0/12) | **100.00% (12/12)** | **+100.00%** |
-| **平均核查耗时（Mean Latency）** | 0.01 ms | **0.35 ms** | 实时临床决策支持响应 |
+| **成功拦截的高危用药禁忌数（`TP`）** | `1 / 12` | **`12 / 12`** | `+11 例高危漏报被成功拦截` |
+| **正确放行的安全处方案例数（`TN`）** | `8 / 8` | **`8 / 8`** | — |
+| **召回率 / 敏感度（Recall / Sensitivity）** | `8.33%` | **`100.00%`** | **`+91.67%`** |
+| **精确率（Precision / PPV）** | `100.00%` | **`100.00%`** | — |
+| **F1 分数（F1 Score）** | `15.38%` | **`100.00%`** | **`+84.62%`** |
+| **假阳性率 / 告警疲劳率（False Positive Rate）** | `0.00%` | **`0.00%`** | **`0.00%`（零误报干扰）** |
+| **权威指南条款引文覆盖率（Citation Coverage）** | `0.00%` (`0/12`) | **`100.00%` (`12/12`)** | **`+100.00%`** |
+| **单病例平均核查延迟（Mean Latency）** | `0.01 ms` | **`0.35 ms`** | 亚毫秒级实时临床决策支持 |
 
 ---
 
-## ⚖️ 伦理、受益者与潜在风险披露（Who Benefits, and Who Could Be Harmed）
+## 4. 谁会受益，谁可能受损及防护机制（Who Benefits, and Who Could Be Harmed）
 
 ### 谁会受益（Who Benefits）
-1. **住院医师、临床药师与出院审方团队**：在签署出院小结前，以毫秒级速度捕获易被忽略的实验室指标与用药禁忌冲突（如肾功能不全、高血钾、QT 间期延长、儿童用药禁忌），并直接定位到 KDIGO / ADA / AHA 指南条款。
-2. **患者与家庭照护者**：自动生成双语（英文/简体中文）、通俗易懂的「患者安全核对清单（Patient Safety Checklist）」，明确标注需要与主治医生确认的问题及危险预警症状。
-3. **软件研发与安全工程团队**：在 CI/CD 阶段自动捕获除零、浮点精度漂移、非单调阶梯价格等隐蔽边界崩溃，并提供经过属性测试复核的 AST 修复补丁。
+- **合并慢性肾病（CKD）、妊娠或多重用药的高危患者**：在出院关口有效预防可避免的药物不良事件（ADE），并通过双语通俗的「患者安全核对清单」赋能医患共同决策。
+- **高负荷工作的住院医师与临床药师**：在零假阳性骚扰的前提下，秒级获取带权威指南出处的用药禁忌拦截与替代方案建议。
+- **医疗资源受限地区与高隐私要求的基层医院**：核心药理核查引擎支持 **100% 本地离线运行（Zero-PHI）**，无需联网上传任何患者隐私数据，普通办公电脑即可达到 `<1 ms` 响应。
 
-### 谁可能受损及我们内置的防护机制（Who Could Be Harmed & Safeguards）
-1. **过度依赖风险（Automation Bias / Over-Reliance）**：如果临床人员将未触发告警等同于「绝对安全」，可能漏掉规则库尚未覆盖的罕见个体化合并症。
-   - **内置防护**：所有输出均强制带有醒目的 `NON-PRESCRIPTIVE CLINICAL DECISION SUPPORT ONLY`（非处方临床辅助审计）声明，并要求执业医师与药师双重签字确认。
-2. **告警疲劳风险（Alert Fatigue）**：传统医院 HIS 系统大量低价值弹窗会导致医生习惯性忽略警告。
-   - **内置防护**：严格遵循 `Property 2`（反例证人必要性），**只有当工具构造出具体的定量实验室指标/药物冲突证人时才允许触发拦截**，在安全案例上实现了 `0.00%` 误报率。
-3. **患者隐私泄露风险（PHI Exposure）**：
-   - **内置防护**：支持 100% 本地离线确定性核查（Zero-PHI 架构），无需向外部云端发送任何真实患者身份信息。
+### 谁可能受损及系统内置的三重安全护栏（Who Could Be Harmed & Safeguards）
+1. **临床人员的自动化偏见与过度依赖风险（Automation Bias）**：若医生误以为系统显示「全部通过（Verified）」就代表绝对没有任何罕见风险，可能忽略当前规则库尚未收录的罕见肝酶基因多态性或特殊合并症。
+   - **内置护栏**：每一份审计证书与 UI 界面均通过形式化属性 `Property 6` 强制嵌入不可移除的伦理声明横幅（`ethics_and_harm_disclosure`），明确声明本系统**仅作为非处方临床辅助审计工具（Non-Prescriptive CDS Only）**，所有医嘱调整必须由执业医师与临床药师最终审核签字。
+2. **频繁弹窗导致的告警疲劳（Alert Fatigue）**：如果系统频繁对安全医嘱发出低价值警告，医生会养成直接忽略弹窗的习惯。
+   - **内置护栏**：严格执行反例可靠性定理（`Property 2`），**只有当 MCP 工具构造出超过定量生理阈值的确定性反例证人时才允许触发拦截**，在安全对照组上保持 `0.00%` 误报率。
+3. **患者自行停药风险（Self-Discontinuation Risk）**：若患者看到生硬的禁忌警告而未经医生指导擅自停用关键药物，可能引发病情反弹。
+   - **内置护栏**：面向患者的核对清单全部采用温和、明确的沟通式措辞（*“请在服药前与您的主治医生或药师确认以下问题”*），绝不向患者直接下达停药或换药指令。
 
 ---
 
-## 🚀 快速开始（Quickstart：支持中英双语 Web 工作台与零密钥离线运行）
+## 5. 当前局限性与未来一个月迭代路线图（Limitations and One-Month Roadmap）
 
-> **零 API 密钥开箱即用**：所有确定性核查（EARS 编译、AST/Hypothesis 属性测试、临床药理规则引擎及补丁合成）均完全在本地运行，无需配置外部付费 API Key。
+### 当前局限性（Limitations）
+1. **药理规则库覆盖广度**：当前 `tools_clinical_kb.py` 聚焦于高致死率/高发生率的 KDIGO 肾功能分级禁忌、ACOG 妊娠致畸药物、AAAAI $\beta$-内酰胺交叉过敏以及 ISMP 5-羟色胺综合征相互作用，尚未覆盖完整的 FDA DailyMed / RxNorm 全量药品目录。
+2. **离线模式下的自由文本解析**：在无外部 LLM 密钥的纯离线模式下，系统通过确定性临床正则与词典提取 `eGFR` 及药品名称，对于高度非标准的罕见手写缩写可能存在解析盲区。
+3. **评测数据集规模（`N = 20`）**：当前基准集为 20 例高仿真合成出院病历，在进入真实临床试点前，仍需在更大规模的真实脱敏电子病历集（如 MIMIC-IV）上进行外部验证。
 
-### 1. 安装依赖并启动双语交互式 Web 工作台
+### 未来 1 个月具体推进路线图（One-Month Roadmap）
+- **第 1 周（接入 RxNorm 与 DailyMed 标准本体）**：在 `packages/specguard_mcp_server/tools_clinical_kb.py` 中集成 RxNorm 标准概念唯一标识符（CUI）映射与 openFDA/DailyMed 结构化说明书禁忌表。
+- **第 2 周（支持 HL7 FHIR R4 标准临床数据流）**：新增原生 HL7 FHIR R4 接口，直接解析 `Observation`（`eGFR`、血钾 `K+`、`QTc`）与 `MedicationRequest` 资源包。
+- **第 3 周（扩展至 MIMIC-IV `N = 250` 真实脱敏病历评测）**：在经临床药师双盲标注的 250 份 MIMIC-IV 脱敏出院小结上运行完整评测基准。
+- **第 4 周（开展住院医师与药师人机协同可用性测试）**：联合 5 名住院医师与临床药师开展模拟出院审方对照实验，量化评估审方耗时缩短比例与告警采纳率。
+
+---
+
+## 6. 快速开始（支持中英双语临床工作台与一键自动演示）
 
 ```bash
 pip install -e .
@@ -151,27 +114,12 @@ python3 -m uvicorn apps.backend_api.main:app --host 0.0.0.0 --port 8000
 ```
 
 在浏览器打开 `http://localhost:8000`：
-- 点击右上角 **「🌐 中文 / EN」** 即可随时在**简体中文**与**英文**界面之间一键切换；
-- 点击右上角 **「🎬 自动演示导览（Auto-Demo Tour）」** 可自动播放涵盖骨架总览、代码除灵自愈、临床安全审计、`.kiro` 规格检视器与定量评测基准的 5 幕交互式演示。
+- 默认直接进入 **🩺 MedEvidence-Checker（临床精准审计台）** 视图；
+- 点击右上角 **「🌐 中文 / EN」** 按钮可随时在**简体中文**与**英文**界面之间切换；
+- 点击右上角 **「🎬 自动演示导览」** 即可自动播放完整交互演示。
 
-### 2. 分别运行两个独立应用的命令行工具（CLI）
-
+命令行与自动化测试：
 ```bash
-# 运行应用 #1：Repo-Necromancer（软件工程代码边界猎杀与自愈）
-python3 apps/repo-necromancer/cli.py --preset NECRO-01
-
-# 运行应用 #2：MedEvidence-Checker（临床出院医嘱循证安全审计）
 python3 apps/med-evidence-checker/cli.py --preset MED-01
-```
-
-### 3. 运行自动化测试套件（含 Hypothesis 形式化属性测试）
-
-```bash
 python3 -m pytest -v
 ```
-
----
-
-## 📄 开源协议与致谢（License & Attribution）
-
-本项目基于 [MIT License](LICENSE) 开源。详见 [`docs/devpost_submission_kiroween.md`](docs/devpost_submission_kiroween.md) 与 [`docs/devpost_submission_ai_medicine.md`](docs/devpost_submission_ai_medicine.md)。
