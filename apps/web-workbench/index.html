@@ -37,6 +37,25 @@
     .glow-purple {
       box-shadow: 0 0 24px rgba(168, 85, 247, 0.2);
     }
+
+    .glow-sky {
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.18);
+    }
+
+    @keyframes ribbonPulse {
+      0%, 100% {
+        border-color: rgba(52, 211, 153, 0.95);
+        box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.45), 0 0 28px rgba(16, 185, 129, 0.35);
+      }
+      50% {
+        border-color: rgba(192, 132, 252, 0.95);
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.55), 0 0 36px rgba(168, 85, 247, 0.42);
+      }
+    }
+
+    .ribbon-spotlight {
+      animation: ribbonPulse 1.6s ease-in-out infinite;
+    }
   </style>
 </head>
 <body id="app-body" class="min-h-screen bg-[#070a0e] text-slate-100 crt-scanlines">
@@ -68,7 +87,7 @@
         <button
           id="tab-app1"
           onclick="switchView('app1')"
-          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-lg"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-lg ring-2 ring-emerald-300/60"
         >
           <span id="i18n-tab-app1">🎃 App #1: RepoNecromancer</span>
           <span class="opacity-75 text-[10px]">(apps/repo-necromancer)</span>
@@ -77,7 +96,7 @@
         <button
           id="tab-app2"
           onclick="switchView('app2')"
-          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700"
+          class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-sky-200 hover:bg-slate-700 border border-sky-500/30"
         >
           <span id="i18n-tab-app2">🩺 App #2: MedEvidence-Checker</span>
           <span class="opacity-75 text-[10px]">(apps/med-evidence-checker)</span>
@@ -89,7 +108,7 @@
           class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-purple-300 hover:bg-slate-700 border border-purple-500/40"
         >
           <span id="i18n-tab-kiro">⚡ /.kiro Live Inspector</span>
-          <span class="px-1.5 py-0.2 rounded bg-purple-500/30 text-[10px]">21 EARS</span>
+          <span id="tab-kiro-badge" class="px-1.5 py-0.2 rounded bg-purple-500/30 text-[10px]">21 EARS</span>
         </button>
 
         <button
@@ -98,7 +117,7 @@
           class="px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-amber-300 hover:bg-slate-700 border border-amber-500/40"
         >
           <span id="i18n-tab-bench">📊 Evaluation Benchmarks</span>
-          <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-[10px]">100% F1</span>
+          <span id="tab-bench-badge" class="px-1.5 py-0.2 rounded bg-amber-500/20 text-[10px]">100% F1</span>
         </button>
 
         <button
@@ -121,16 +140,73 @@
       </div>
     </div>
 
-    <!-- Auto-Demo Caption Banner -->
-    <div id="autodemo-banner" class="hidden bg-gradient-to-r from-purple-900/95 via-indigo-900/95 to-emerald-900/95 border-t border-purple-400/40 px-4 py-2 text-center">
-      <div class="max-w-5xl mx-auto flex items-center justify-between gap-4">
-        <span id="autodemo-step-badge" class="text-xs font-mono-code px-2 py-0.5 rounded bg-white/15 text-amber-300 font-bold">
-          SCENE 1 / 5
-        </span>
-        <p id="autodemo-caption" class="text-sm font-medium text-white flex-1"></p>
-        <button onclick="stopAutoDemo()" id="i18n-btn-stop-tour" class="text-xs font-mono-code px-2 py-1 rounded bg-rose-500/30 text-rose-200 border border-rose-400/40">
-          Stop Tour
-        </button>
+    <!-- Auto-Demo Caption & Countdown Control Banner -->
+    <div id="autodemo-banner" class="hidden bg-gradient-to-r from-[#1a1033]/95 via-[#0f1f3d]/95 to-[#082c26]/95 border-t border-purple-400/40 px-4 pt-2 pb-1.5">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="autodemo-step-badge" class="text-xs font-mono-code px-2 py-0.5 rounded bg-white/15 text-amber-300 font-bold">
+            SCENE 1 / 5
+          </span>
+          <span id="autodemo-countdown-badge" class="text-xs font-mono-code px-2.5 py-0.5 rounded bg-slate-950/60 text-emerald-300 border border-emerald-400/35 font-semibold">
+            本幕剩 30s · 总 0:00 / 2:45
+          </span>
+        </div>
+
+        <p id="autodemo-caption" class="text-xs sm:text-sm font-medium text-white flex-1 min-w-[220px] text-left sm:text-center"></p>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            id="btn-demo-prev"
+            onclick="prevAutoDemoScene()"
+            class="text-xs font-mono-code px-2 py-1 rounded bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-600/60 transition"
+            title="Previous Scene / 上一幕 (←)"
+          >
+            ⏮
+          </button>
+          <button
+            id="btn-demo-pause"
+            onclick="toggleAutoDemoPause()"
+            class="text-xs font-mono-code px-2.5 py-1 rounded bg-slate-900/80 hover:bg-slate-800 text-amber-300 border border-amber-400/40 transition font-bold"
+            title="Pause / Resume (Space)"
+          >
+            ⏸
+          </button>
+          <button
+            id="btn-demo-next"
+            onclick="nextAutoDemoScene()"
+            class="text-xs font-mono-code px-2 py-1 rounded bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-600/60 transition"
+            title="Next Scene / 下一幕 (→)"
+          >
+            ⏭
+          </button>
+          <button
+            id="btn-demo-mode"
+            onclick="toggleAutoDemoMode()"
+            class="text-xs font-mono-code px-2.5 py-1 rounded bg-indigo-900/70 hover:bg-indigo-800 text-indigo-200 border border-indigo-400/40 transition font-semibold"
+            title="Switch between 2:45 Voiceover Sync & 40s Quick Tour"
+          >
+            ⚡ 40s Quick
+          </button>
+          <button
+            id="btn-demo-teleprompter"
+            onclick="openTeleprompterWindow()"
+            class="text-xs font-mono-code px-2.5 py-1 rounded bg-sky-900/70 hover:bg-sky-800 text-sky-200 border border-sky-400/40 transition font-semibold"
+            title="Open standalone Teleprompter popup / 打开独立提词器弹窗"
+          >
+            📜 提词器 / Script
+          </button>
+          <button
+            onclick="stopAutoDemo()"
+            id="i18n-btn-stop-tour"
+            class="text-xs font-mono-code px-2.5 py-1 rounded bg-rose-500/30 hover:bg-rose-500/45 text-rose-200 border border-rose-400/40 transition"
+          >
+            Stop Tour
+          </button>
+        </div>
+      </div>
+      <!-- Smooth Progress Bar -->
+      <div class="max-w-7xl mx-auto mt-2 h-1.5 rounded-full bg-slate-950/70 overflow-hidden border border-white/10">
+        <div id="autodemo-progress-bar" class="h-full w-0 bg-gradient-to-r from-emerald-400 via-sky-400 to-purple-400 transition-all duration-200 ease-linear"></div>
       </div>
     </div>
   </header>
@@ -138,7 +214,7 @@
   <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
     <!-- Shared Skeleton Crew Architecture Ribbon -->
-    <section id="skeleton-ribbon" class="rounded-xl border border-emerald-500/30 bg-[#0d141d] p-4 glow-emerald text-slate-100">
+    <section id="skeleton-ribbon" class="rounded-xl border border-emerald-500/30 bg-[#0d141d] p-4 glow-emerald text-slate-100 transition-all duration-300">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div class="flex items-center gap-2">
           <span id="i18n-ribbon-title" class="text-xs font-mono-code uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">
@@ -305,109 +381,119 @@
     </section>
 
     <!-- ===================================================================== -->
-    <!-- VIEW 2: APP #2 MEDEVIDENCE-CHECKER (CLINICAL PRECISION DASHBOARD)     -->
+    <!-- VIEW 2: APP #2 MEDEVIDENCE-CHECKER (CLINICAL MONITOR DARK / DAYLIGHT) -->
     <!-- ===================================================================== -->
     <section id="view-app2" class="hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Left Column: Clinical Vignette Selector & Editor -->
         <div class="lg:col-span-5 space-y-4">
-          <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-3">
-            <div class="flex items-center justify-between">
-              <h2 class="text-sm font-bold text-sky-800 flex items-center gap-2">
+          <div id="app2-panel-input" class="rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-3 transition-colors duration-200">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <h2 id="app2-heading-wrap" class="text-sm font-bold text-sky-300 flex items-center gap-2">
                 <span id="i18n-app2-heading">🩺 App #2: MedEvidence-Checker</span>
-                <span class="text-[11px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-mono-code">Zero-PHI</span>
+                <span id="app2-zero-phi-badge" class="text-[11px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30 font-mono-code">Zero-PHI</span>
               </h2>
-              <span class="text-[11px] font-mono-code text-slate-500">Folder: `apps/med-evidence-checker`</span>
+              <span id="app2-folder-label" class="text-[11px] font-mono-code text-slate-400">Folder: `apps/med-evidence-checker`</span>
             </div>
 
             <div>
-              <label id="i18n-app2-preset-label" class="block text-xs font-semibold text-slate-600 mb-1.5">
+              <label id="i18n-app2-preset-label" class="block text-xs font-semibold text-slate-300 mb-1.5">
                 Select Synthetic Clinical Vignette Preset (100% Zero-PHI):
               </label>
               <select
                 id="app2-preset-select"
                 onchange="loadApp2Preset(this.value)"
-                class="w-full rounded-lg bg-slate-50 border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none"
+                class="w-full rounded-lg bg-[#06101a] border border-sky-500/40 px-3 py-2 text-xs font-medium text-sky-100 focus:outline-none"
               ></select>
             </div>
 
             <div>
-              <div class="flex items-center justify-between text-xs text-slate-600 mb-1">
+              <div id="app2-input-label-row" class="flex items-center justify-between text-xs text-slate-300 mb-1">
                 <span id="i18n-app2-input-label" class="font-semibold">Synthetic Clinical Note / Discharge Plan (Editable):</span>
-                <span class="font-mono-code text-[11px] text-sky-700">MCP: `query_clinical_guidelines_db`</span>
+                <span id="app2-mcp-tag" class="font-mono-code text-[11px] text-sky-400">MCP: `query_clinical_guidelines_db`</span>
               </div>
               <textarea
                 id="app2-clinical-input"
                 rows="7"
-                class="w-full rounded-lg bg-slate-50 border border-slate-300 p-3 text-xs font-mono-code text-slate-800 focus:border-sky-600 focus:outline-none"
+                class="w-full rounded-lg bg-[#06101a] border border-slate-700 p-3 text-xs font-mono-code text-sky-100 focus:border-sky-400 focus:outline-none"
               ></textarea>
             </div>
 
             <button
               onclick="runApp2Audit()"
               id="i18n-app2-run-btn"
-              class="w-full py-2.5 px-4 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs transition shadow"
+              class="w-full py-2.5 px-4 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition shadow-lg"
             >
               🩺 Run 3-Agent Clinical Guideline & Contraindication Audit
             </button>
           </div>
 
           <!-- Extracted Patient Physiology Cards -->
-          <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-2.5">
-            <h3 id="i18n-app2-phys-heading" class="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div id="app2-panel-phys" class="rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-2.5 transition-colors duration-200">
+            <h3 id="i18n-app2-phys-heading" class="text-xs font-bold uppercase tracking-wider text-sky-300/90">
               Agent #1 (`ClaimExtractor`) — Structured Patient Physiology
             </h3>
             <div class="grid grid-cols-3 gap-2 text-xs">
-              <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div id="i18n-phys-egfr" class="text-slate-500 text-[11px]">Renal eGFR</div>
-                <div id="med-ctx-egfr" class="font-bold font-mono-code text-sm text-rose-700 mt-0.5">22 mL/min</div>
+              <div id="app2-phys-card-egfr" class="rounded-lg bg-[#06101a] border border-slate-700/80 p-2.5">
+                <div id="i18n-phys-egfr" class="text-slate-400 text-[11px]">Renal eGFR</div>
+                <div id="med-ctx-egfr" class="font-bold font-mono-code text-sm text-rose-400 mt-0.5">22 mL/min</div>
               </div>
-              <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div id="i18n-phys-preg" class="text-slate-500 text-[11px]">Pregnancy Status</div>
-                <div id="med-ctx-preg" class="font-bold font-mono-code text-sm text-slate-800 mt-0.5">Non-Pregnant</div>
+              <div id="app2-phys-card-preg" class="rounded-lg bg-[#06101a] border border-slate-700/80 p-2.5">
+                <div id="i18n-phys-preg" class="text-slate-400 text-[11px]">Pregnancy Status</div>
+                <div id="med-ctx-preg" class="font-bold font-mono-code text-sm text-slate-100 mt-0.5">Non-Pregnant</div>
               </div>
-              <div class="rounded-lg bg-slate-50 border border-slate-200 p-2.5">
-                <div id="i18n-phys-allergy" class="text-slate-500 text-[11px]">Allergies</div>
-                <div id="med-ctx-allergy" class="font-bold font-mono-code text-sm text-slate-800 mt-0.5">NKDA</div>
+              <div id="app2-phys-card-allergy" class="rounded-lg bg-[#06101a] border border-slate-700/80 p-2.5">
+                <div id="i18n-phys-allergy" class="text-slate-400 text-[11px]">Allergies</div>
+                <div id="med-ctx-allergy" class="font-bold font-mono-code text-sm text-slate-100 mt-0.5">NKDA</div>
               </div>
             </div>
-            <div class="text-xs text-slate-600 pt-1">
+            <div id="app2-phys-orders-row" class="text-xs text-slate-300 pt-1">
               <span id="i18n-phys-orders" class="font-semibold">Extracted Active Orders:</span>
-              <span id="med-ctx-drugs" class="font-mono-code text-sky-800 ml-1">metformin, ibuprofen</span>
+              <span id="med-ctx-drugs" class="font-mono-code text-sky-300 ml-1">metformin, ibuprofen</span>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Clinical Contraindications, Revised Plan & Mandatory Harm Disclosure -->
         <div class="lg:col-span-7 space-y-4">
-          <div class="rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+          <div id="app2-panel-report" class="rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-4 transition-colors duration-200">
+            <div id="app2-report-header" class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700/80 pb-3">
               <div>
-                <span id="i18n-app2-status-label" class="text-xs font-semibold text-slate-500">Clinical Safety Verdict:</span>
-                <span id="app2-status-pill" class="ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-100 text-rose-800 border border-rose-300">
+                <span id="i18n-app2-status-label" class="text-xs font-semibold text-slate-400">Clinical Safety Verdict:</span>
+                <span id="app2-status-pill" class="ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-500/20 text-rose-300 border border-rose-500/40">
                   VIOLATION_DETECTED
                 </span>
               </div>
-              <div class="text-xs font-mono-code text-slate-500">
-                <span id="i18n-app2-base-label">Single-Prompt Baseline:</span> <span id="app2-baseline-pill" class="font-bold text-rose-700">MISSED (Silent Hallucination)</span>
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div id="app2-baseline-wrap" class="text-xs font-mono-code text-slate-400">
+                  <span id="i18n-app2-base-label">Single-Prompt Baseline:</span> <span id="app2-baseline-pill" class="font-bold text-rose-400">MISSED (Silent Hallucination)</span>
+                </div>
+                <button
+                  id="btn-app2-theme"
+                  onclick="toggleApp2Daylight()"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-mono-code font-semibold bg-slate-800/90 hover:bg-slate-700 text-amber-300 border border-amber-400/40 transition"
+                  title="Toggle Clinical Monitor Dark / Daylight EHR Paper Theme"
+                >
+                  ☀️ Daylight EHR
+                </button>
               </div>
             </div>
 
             <!-- Contraindication Evidence Cards -->
             <div>
-              <h3 id="i18n-app2-witness-heading" class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+              <h3 id="i18n-app2-witness-heading" class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                 Agent #2 (`CounterexampleHunter`) — Guideline Contraindication Evidence:
               </h3>
               <div id="app2-witness-list" class="space-y-2.5"></div>
             </div>
 
             <!-- Mandatory AI for Medicine Safety & Harm Disclosure Block -->
-            <div class="rounded-lg bg-amber-50 border border-amber-300 p-3.5 space-y-2 text-xs text-slate-800">
+            <div id="app2-ethics-box" class="rounded-lg bg-amber-950/30 border border-amber-500/40 p-3.5 space-y-2 text-xs text-slate-200">
               <div class="flex items-center justify-between flex-wrap gap-1">
-                <span id="i18n-ethics-title" class="font-bold text-amber-900 uppercase tracking-wider">
+                <span id="i18n-ethics-title" class="font-bold text-amber-300 uppercase tracking-wider">
                   ⚖️ Mandatory Ethics & Safety Disclosure (`Who Benefits, and Who Could Be Harmed`)
                 </span>
-                <span class="font-mono-code text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">
+                <span id="app2-ethics-badge" class="font-mono-code text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
                   Property 6 Verified · Zero-PHI
                 </span>
               </div>
@@ -933,6 +1019,21 @@
       sel2.value = cur2;
     }
 
+    let app2Daylight = false;
+    let lastApp1Report = APP1_PRESETS[0];
+    let lastApp2Report = APP2_PRESETS[0];
+    let app1AuditSeq = 0;
+    let app2AuditSeq = 0;
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     function toggleLanguage() {
       currentLang = currentLang === "en" ? "zh" : "en";
       const dict = I18N[currentLang];
@@ -946,9 +1047,18 @@
           }
         }
       });
+      const autoBtnLabel = document.getElementById("i18n-btn-autodemo");
+      if (autoBtnLabel && autoDemoActive) {
+        autoBtnLabel.textContent = currentLang === "zh" ? "⏹ 停止导览" : "⏹ Stop Tour";
+      }
       populatePresetDropdowns();
-      renderApp1Report(APP1_PRESETS[document.getElementById("app1-preset-select").value || 0]);
-      renderApp2Report(APP2_PRESETS[document.getElementById("app2-preset-select").value || 0]);
+      renderApp1Report(lastApp1Report || APP1_PRESETS[document.getElementById("app1-preset-select").value || 0]);
+      renderApp2Report(lastApp2Report || APP2_PRESETS[document.getElementById("app2-preset-select").value || 0]);
+      applyViewTheme();
+      if (autoDemoActive) {
+        renderAutoDemoBanner();
+        syncTeleprompter(true);
+      }
     }
 
     function initWorkbench() {
@@ -971,23 +1081,181 @@
       switchView(defaultView);
     }
 
-    function switchView(view) {
-      currentView = view;
+    function updateNavTabs(view) {
+      const tabConfigs = {
+        app1: {
+          active: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-lg ring-2 ring-emerald-300/60",
+          inactive: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-emerald-200 hover:bg-slate-700 border border-emerald-500/30"
+        },
+        app2: {
+          active: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-sky-500 text-slate-950 shadow-lg ring-2 ring-sky-300/60",
+          inactive: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-sky-200 hover:bg-slate-700 border border-sky-500/30"
+        },
+        kiro: {
+          active: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-purple-500 text-white shadow-lg ring-2 ring-purple-300/60",
+          inactive: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-purple-300 hover:bg-slate-700 border border-purple-500/40"
+        },
+        bench: {
+          active: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-amber-400 text-slate-950 shadow-lg ring-2 ring-amber-200/70",
+          inactive: "px-3 py-2 rounded-lg text-xs font-semibold font-mono-code transition flex items-center gap-1.5 bg-slate-800 text-amber-300 hover:bg-slate-700 border border-amber-500/40"
+        }
+      };
+
       ["app1", "app2", "kiro", "bench"].forEach(v => {
-        document.getElementById(`view-${v}`).classList.toggle("hidden", v !== view);
+        const btn = document.getElementById(`tab-${v}`);
+        if (btn) btn.className = v === view ? tabConfigs[v].active : tabConfigs[v].inactive;
       });
 
-      const body = document.getElementById("app-body");
-      const badge = document.getElementById("active-domain-badge");
+      const kiroBadge = document.getElementById("tab-kiro-badge");
+      if (kiroBadge) {
+        kiroBadge.className = view === "kiro"
+          ? "px-1.5 py-0.2 rounded bg-purple-900/50 text-white text-[10px]"
+          : "px-1.5 py-0.2 rounded bg-purple-500/30 text-[10px]";
+      }
+      const benchBadge = document.getElementById("tab-bench-badge");
+      if (benchBadge) {
+        benchBadge.className = view === "bench"
+          ? "px-1.5 py-0.2 rounded bg-amber-950/20 text-slate-950 text-[10px]"
+          : "px-1.5 py-0.2 rounded bg-amber-500/20 text-[10px]";
+      }
+    }
 
-      if (view === "app2") {
-        body.className = "min-h-screen bg-slate-100 text-slate-900";
+    function applyApp2Theme() {
+      const dark = !app2Daylight;
+      const setCls = (id, cls) => {
+        const el = document.getElementById(id);
+        if (el) el.className = cls;
+      };
+
+      setCls("app2-panel-input", dark
+        ? "rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-3 transition-colors duration-200"
+        : "rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-3 transition-colors duration-200");
+      setCls("app2-heading-wrap", dark
+        ? "text-sm font-bold text-sky-300 flex items-center gap-2"
+        : "text-sm font-bold text-sky-800 flex items-center gap-2");
+      setCls("app2-zero-phi-badge", dark
+        ? "text-[11px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30 font-mono-code"
+        : "text-[11px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-mono-code");
+      setCls("app2-folder-label", dark
+        ? "text-[11px] font-mono-code text-slate-400"
+        : "text-[11px] font-mono-code text-slate-500");
+      setCls("i18n-app2-preset-label", dark
+        ? "block text-xs font-semibold text-slate-300 mb-1.5"
+        : "block text-xs font-semibold text-slate-600 mb-1.5");
+      setCls("app2-preset-select", dark
+        ? "w-full rounded-lg bg-[#06101a] border border-sky-500/40 px-3 py-2 text-xs font-medium text-sky-100 focus:outline-none"
+        : "w-full rounded-lg bg-slate-50 border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none");
+      setCls("app2-input-label-row", dark
+        ? "flex items-center justify-between text-xs text-slate-300 mb-1"
+        : "flex items-center justify-between text-xs text-slate-600 mb-1");
+      setCls("app2-mcp-tag", dark
+        ? "font-mono-code text-[11px] text-sky-400"
+        : "font-mono-code text-[11px] text-sky-700");
+      setCls("app2-clinical-input", dark
+        ? "w-full rounded-lg bg-[#06101a] border border-slate-700 p-3 text-xs font-mono-code text-sky-100 focus:border-sky-400 focus:outline-none"
+        : "w-full rounded-lg bg-slate-50 border border-slate-300 p-3 text-xs font-mono-code text-slate-800 focus:border-sky-600 focus:outline-none");
+      setCls("i18n-app2-run-btn", dark
+        ? "w-full py-2.5 px-4 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition shadow-lg"
+        : "w-full py-2.5 px-4 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs transition shadow");
+
+      setCls("app2-panel-phys", dark
+        ? "rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-2.5 transition-colors duration-200"
+        : "rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-2.5 transition-colors duration-200");
+      setCls("i18n-app2-phys-heading", dark
+        ? "text-xs font-bold uppercase tracking-wider text-sky-300/90"
+        : "text-xs font-bold uppercase tracking-wider text-slate-500");
+
+      ["app2-phys-card-egfr", "app2-phys-card-preg", "app2-phys-card-allergy"].forEach(id => {
+        setCls(id, dark
+          ? "rounded-lg bg-[#06101a] border border-slate-700/80 p-2.5"
+          : "rounded-lg bg-slate-50 border border-slate-200 p-2.5");
+      });
+      ["i18n-phys-egfr", "i18n-phys-preg", "i18n-phys-allergy"].forEach(id => {
+        setCls(id, dark ? "text-slate-400 text-[11px]" : "text-slate-500 text-[11px]");
+      });
+      setCls("med-ctx-egfr", dark
+        ? "font-bold font-mono-code text-sm text-rose-400 mt-0.5"
+        : "font-bold font-mono-code text-sm text-rose-700 mt-0.5");
+      setCls("med-ctx-preg", dark
+        ? "font-bold font-mono-code text-sm text-slate-100 mt-0.5"
+        : "font-bold font-mono-code text-sm text-slate-800 mt-0.5");
+      setCls("med-ctx-allergy", dark
+        ? "font-bold font-mono-code text-sm text-slate-100 mt-0.5"
+        : "font-bold font-mono-code text-sm text-slate-800 mt-0.5");
+      setCls("app2-phys-orders-row", dark ? "text-xs text-slate-300 pt-1" : "text-xs text-slate-600 pt-1");
+      setCls("med-ctx-drugs", dark ? "font-mono-code text-sky-300 ml-1" : "font-mono-code text-sky-800 ml-1");
+
+      setCls("app2-panel-report", dark
+        ? "rounded-xl border border-sky-500/35 bg-[#0a1826] text-slate-100 shadow-lg p-4 space-y-4 transition-colors duration-200"
+        : "rounded-xl border border-slate-300 bg-white text-slate-900 shadow-sm p-4 space-y-4 transition-colors duration-200");
+      setCls("app2-report-header", dark
+        ? "flex flex-wrap items-center justify-between gap-2 border-b border-slate-700/80 pb-3"
+        : "flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3");
+      setCls("i18n-app2-status-label", dark
+        ? "text-xs font-semibold text-slate-400"
+        : "text-xs font-semibold text-slate-500");
+      setCls("app2-baseline-wrap", dark
+        ? "text-xs font-mono-code text-slate-400"
+        : "text-xs font-mono-code text-slate-500");
+      setCls("i18n-app2-witness-heading", dark
+        ? "text-xs font-bold uppercase tracking-wider text-slate-300 mb-2"
+        : "text-xs font-bold uppercase tracking-wider text-slate-600 mb-2");
+      setCls("app2-ethics-box", dark
+        ? "rounded-lg bg-amber-950/30 border border-amber-500/40 p-3.5 space-y-2 text-xs text-slate-200"
+        : "rounded-lg bg-amber-50 border border-amber-300 p-3.5 space-y-2 text-xs text-slate-800");
+      setCls("i18n-ethics-title", dark
+        ? "font-bold text-amber-300 uppercase tracking-wider"
+        : "font-bold text-amber-900 uppercase tracking-wider");
+      setCls("app2-ethics-badge", dark
+        ? "font-mono-code text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold"
+        : "font-mono-code text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold");
+
+      const themeBtn = document.getElementById("btn-app2-theme");
+      if (themeBtn) {
+        themeBtn.className = dark
+          ? "px-2.5 py-1 rounded-lg text-[11px] font-mono-code font-semibold bg-slate-800/90 hover:bg-slate-700 text-amber-300 border border-amber-400/40 transition"
+          : "px-2.5 py-1 rounded-lg text-[11px] font-mono-code font-semibold bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-500/40 transition";
+        themeBtn.textContent = dark
+          ? (currentLang === "zh" ? "☀️ 纸质浅色" : "☀️ Daylight EHR")
+          : (currentLang === "zh" ? "🌙 深海蓝暗色" : "🌙 Monitor Dark");
+      }
+    }
+
+    function toggleApp2Daylight() {
+      app2Daylight = !app2Daylight;
+      applyViewTheme();
+      renderApp2Report(lastApp2Report || APP2_PRESETS[document.getElementById("app2-preset-select").value || 0]);
+    }
+
+    function applyViewTheme() {
+      const body = document.getElementById("app-body");
+      const header = document.getElementById("top-header");
+      const ribbon = document.getElementById("skeleton-ribbon");
+      const badge = document.getElementById("active-domain-badge");
+      const hasSpotlight = ribbon && ribbon.classList.contains("ribbon-spotlight");
+
+      if (currentView === "app2") {
+        body.className = app2Daylight
+          ? "min-h-screen bg-slate-100 text-slate-900"
+          : "min-h-screen bg-[#06111c] text-slate-100";
+        if (header) {
+          header.className = "border-b border-sky-500/30 bg-[#071523]/95 backdrop-blur sticky top-0 z-40";
+        }
+        if (ribbon) {
+          ribbon.className = `rounded-xl border border-sky-500/35 bg-[#0a1826] p-4 glow-sky text-slate-100 transition-all duration-300${hasSpotlight ? " ribbon-spotlight" : ""}`;
+        }
         badge.textContent = currentLang === "zh"
           ? "当前挂载适配器：`ClinicalAuditDomainAdapter` (`apps/med-evidence-checker` · Zero-PHI)"
           : "Active Adapter: `ClinicalAuditDomainAdapter` (`apps/med-evidence-checker` · Zero-PHI)";
       } else {
         body.className = "min-h-screen bg-[#070a0e] text-slate-100 crt-scanlines";
-        badge.textContent = view === "app1"
+        if (header) {
+          header.className = "border-b border-emerald-500/25 bg-[#0b1017]/95 backdrop-blur sticky top-0 z-40";
+        }
+        if (ribbon) {
+          ribbon.className = `rounded-xl border border-emerald-500/30 bg-[#0d141d] p-4 glow-emerald text-slate-100 transition-all duration-300${hasSpotlight ? " ribbon-spotlight" : ""}`;
+        }
+        badge.textContent = currentView === "app1"
           ? (currentLang === "zh"
               ? "当前挂载适配器：`CodeAuditDomainAdapter` (`apps/repo-necromancer` · Hypothesis PBT)"
               : "Active Adapter: `CodeAuditDomainAdapter` (`apps/repo-necromancer` · Hypothesis PBT)")
@@ -995,6 +1263,17 @@
               ? "当前透视面板：根目录 `/.kiro` 形式化规约与定量评估引擎"
               : "Active Inspector: Root `/.kiro` Specification & Benchmark Engine");
       }
+
+      applyApp2Theme();
+    }
+
+    function switchView(view) {
+      currentView = view;
+      ["app1", "app2", "kiro", "bench"].forEach(v => {
+        document.getElementById(`view-${v}`).classList.toggle("hidden", v !== view);
+      });
+      updateNavTabs(view);
+      applyViewTheme();
     }
 
     function loadApp1Preset(idx) {
@@ -1004,30 +1283,44 @@
     }
 
     async function runApp1Audit() {
+      const seq = ++app1AuditSeq;
       const code = document.getElementById("app1-code-input").value;
+      const idx = document.getElementById("app1-preset-select").value;
+      const matchingPreset = APP1_PRESETS.find(p => p.code.trim() === code.trim()) || null;
       try {
         const resp = await fetch("/api/verify/code", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ source_code: code, artifact_id: "live-code" })
         });
+        if (seq !== app1AuditSeq) return;
         if (resp.ok) {
           const data = await resp.json();
+          if (seq !== app1AuditSeq) return;
+          const witnesses = (data.report.witnesses || []).map((w, i) => {
+            const presetW = matchingPreset && matchingPreset.witnesses
+              ? (matchingPreset.witnesses.find(pw => pw.witness_input === w.witness_input) || matchingPreset.witnesses[i])
+              : null;
+            return presetW && presetW.observed_outcome_zh
+              ? { ...w, observed_outcome_zh: presetW.observed_outcome_zh }
+              : w;
+          });
           renderApp1Report({
             status: data.report.overall_status,
             baselineFlagged: data.single_prompt_baseline_flagged,
-            witnesses: data.report.witnesses,
+            witnesses,
             patched: data.report.patched_artifact || code
           });
           return;
         }
       } catch (_) {}
 
-      const idx = document.getElementById("app1-preset-select").value;
-      renderApp1Report(APP1_PRESETS[idx] || APP1_PRESETS[0]);
+      if (seq !== app1AuditSeq) return;
+      renderApp1Report(matchingPreset || APP1_PRESETS[idx] || APP1_PRESETS[0]);
     }
 
     function renderApp1Report(p) {
+      lastApp1Report = p;
       const pill = document.getElementById("app1-status-pill");
       if (p.status === "VERIFIED_SAFE") {
         pill.textContent = currentLang === "zh" ? "VERIFIED_SAFE (验证安全)" : "VERIFIED_SAFE";
@@ -1059,11 +1352,11 @@
         }`;
         card.innerHTML = `
           <div class="flex items-center justify-between font-bold mb-1">
-            <span>[${w.severity}] Counterexample: <code>${w.witness_input}</code></span>
+            <span>[${escapeHtml(w.severity)}] Counterexample: <code>${escapeHtml(w.witness_input)}</code></span>
             <span class="text-[11px] opacity-80">MCP: run_property_test_sandbox</span>
           </div>
-          <p class="text-slate-300">${outcomeText}</p>
-          <div class="mt-1 text-[11px] text-purple-300">Citation: ${w.evidence_citation}</div>
+          <p class="text-slate-300">${escapeHtml(outcomeText)}</p>
+          <div class="mt-1 text-[11px] text-purple-300">Citation: ${escapeHtml(w.evidence_citation)}</div>
         `;
         list.appendChild(card);
       });
@@ -1078,34 +1371,52 @@
     }
 
     async function runApp2Audit() {
+      const seq = ++app2AuditSeq;
       const text = document.getElementById("app2-clinical-input").value;
+      const idx = document.getElementById("app2-preset-select").value;
+      const matchingPreset = APP2_PRESETS.find(p => p.clinical_text.trim() === text.trim()) || null;
       try {
         const resp = await fetch("/api/verify/clinical", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ clinical_text: text, artifact_id: "live-clinical" })
         });
+        if (seq !== app2AuditSeq) return;
         if (resp.ok) {
           const data = await resp.json();
+          if (seq !== app2AuditSeq) return;
           const phys = (data.report.claims[0] && data.report.claims[0].metadata) || {};
+          const witnesses = (data.report.witnesses || []).map((w, i) => {
+            const presetW = matchingPreset && matchingPreset.witnesses
+              ? (matchingPreset.witnesses.find(pw => pw.witness_input === w.witness_input) || matchingPreset.witnesses[i])
+              : null;
+            if (!presetW) return w;
+            return {
+              ...w,
+              observed_outcome_zh: presetW.observed_outcome_zh || w.observed_outcome_zh,
+              remediation_hint_zh: presetW.remediation_hint_zh || w.remediation_hint_zh
+            };
+          });
           renderApp2Report({
             status: data.report.overall_status,
             baselineFlagged: data.single_prompt_baseline_flagged,
-            egfr: phys.egfr != null ? `${phys.egfr} mL/min` : "Not stated",
-            pregnant: phys.pregnant ? "Pregnant" : "Non-Pregnant",
-            allergies: (phys.allergies && phys.allergies.length) ? phys.allergies.join(", ") : "NKDA",
+            egfr: matchingPreset ? matchingPreset.egfr : (phys.egfr != null ? `${phys.egfr} mL/min` : "Not stated"),
+            pregnant: matchingPreset ? matchingPreset.pregnant : (phys.pregnant ? "Pregnant" : "Non-Pregnant"),
+            allergies: matchingPreset ? matchingPreset.allergies : ((phys.allergies && phys.allergies.length) ? phys.allergies.join(", ") : "NKDA"),
             drugs: (phys.prescribed_meds && phys.prescribed_meds.length) ? phys.prescribed_meds.join(", ") : "None",
-            witnesses: data.report.witnesses
+            witnesses
           });
           return;
         }
       } catch (_) {}
 
-      const idx = document.getElementById("app2-preset-select").value;
-      renderApp2Report(APP2_PRESETS[idx] || APP2_PRESETS[0]);
+      if (seq !== app2AuditSeq) return;
+      renderApp2Report(matchingPreset || APP2_PRESETS[idx] || APP2_PRESETS[0]);
     }
 
     function renderApp2Report(p) {
+      lastApp2Report = p;
+      const dark = !app2Daylight;
       document.getElementById("med-ctx-egfr").textContent = p.egfr;
       document.getElementById("med-ctx-preg").textContent = p.pregnant;
       document.getElementById("med-ctx-allergy").textContent = p.allergies;
@@ -1114,18 +1425,26 @@
       const pill = document.getElementById("app2-status-pill");
       if (p.status === "VERIFIED_SAFE") {
         pill.textContent = currentLang === "zh" ? "VERIFIED_SAFE (符合临床指南)" : "VERIFIED_SAFE";
-        pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-emerald-100 text-emerald-800 border border-emerald-300";
+        pill.className = dark
+          ? "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+          : "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-emerald-100 text-emerald-800 border border-emerald-300";
       } else {
         pill.textContent = currentLang === "zh" ? "VIOLATION_DETECTED (检出高危用药禁忌)" : "VIOLATION_DETECTED";
-        pill.className = "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-100 text-rose-800 border border-rose-300";
+        pill.className = dark
+          ? "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-500/20 text-rose-300 border border-rose-500/40"
+          : "ml-2 px-2.5 py-1 rounded-full text-xs font-bold font-mono-code bg-rose-100 text-rose-800 border border-rose-300";
       }
 
-      document.getElementById("app2-baseline-pill").textContent =
+      const basePill = document.getElementById("app2-baseline-pill");
+      basePill.textContent =
         p.status === "VERIFIED_SAFE"
           ? (currentLang === "zh" ? "安全 (True Negative)" : "SAFE (True Negative)")
           : (p.baselineFlagged
               ? "FLAGGED"
               : (currentLang === "zh" ? "漏检 (静默临床幻觉)" : "MISSED (Silent Hallucination)"));
+      basePill.className = p.status === "VERIFIED_SAFE"
+        ? (dark ? "font-bold text-emerald-400" : "font-bold text-emerald-700")
+        : (dark ? "font-bold text-rose-400" : "font-bold text-rose-700");
 
       const list = document.getElementById("app2-witness-list");
       list.innerHTML = "";
@@ -1134,84 +1453,749 @@
         const outcomeText = (currentLang === "zh" && w.observed_outcome_zh) ? w.observed_outcome_zh : w.observed_outcome;
         const hintText = (currentLang === "zh" && w.remediation_hint_zh) ? w.remediation_hint_zh : w.remediation_hint;
         const card = document.createElement("div");
-        card.className = `rounded-lg p-3.5 border text-xs ${
-          isSafe ? "bg-emerald-50 border-emerald-300 text-emerald-950" : "bg-rose-50 border-rose-300 text-rose-950"
-        }`;
-        card.innerHTML = `
-          <div class="flex items-center justify-between font-bold font-mono-code mb-1">
-            <span>[${w.severity}] ${w.witness_input}</span>
-            <span class="text-[11px] text-sky-800">MCP: query_clinical_guidelines_db</span>
-          </div>
-          <p class="text-slate-800 mb-1.5">${outcomeText}</p>
-          <div class="text-[11px] font-mono-code text-slate-600">Guideline Citation: ${w.evidence_citation}</div>
-          ${hintText ? `<div class="mt-2 pt-2 border-t border-rose-200 font-semibold text-emerald-900">✅ ${currentLang === "zh" ? "推荐安全替代方案：" : "Recommended Safe Regimen: "}${hintText}</div>` : ""}
-        `;
+        if (dark) {
+          card.className = `rounded-lg p-3.5 border text-xs ${
+            isSafe
+              ? "bg-emerald-950/35 border-emerald-500/40 text-emerald-100"
+              : "bg-rose-950/35 border-rose-500/40 text-rose-100"
+          }`;
+          card.innerHTML = `
+            <div class="flex items-center justify-between font-bold font-mono-code mb-1 gap-2 flex-wrap">
+              <span>[${escapeHtml(w.severity)}] ${escapeHtml(w.witness_input)}</span>
+              <span class="text-[11px] text-sky-300">MCP: query_clinical_guidelines_db</span>
+            </div>
+            <p class="text-slate-200 mb-1.5">${escapeHtml(outcomeText)}</p>
+            <div class="text-[11px] font-mono-code text-slate-400">Guideline Citation: ${escapeHtml(w.evidence_citation)}</div>
+            ${hintText ? `<div class="mt-2 pt-2 border-t border-rose-500/30 font-semibold text-emerald-300">✅ ${currentLang === "zh" ? "推荐安全替代方案：" : "Recommended Safe Regimen: "}${escapeHtml(hintText)}</div>` : ""}
+          `;
+        } else {
+          card.className = `rounded-lg p-3.5 border text-xs ${
+            isSafe
+              ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+              : "bg-rose-50 border-rose-300 text-rose-950"
+          }`;
+          card.innerHTML = `
+            <div class="flex items-center justify-between font-bold font-mono-code mb-1 gap-2 flex-wrap">
+              <span>[${escapeHtml(w.severity)}] ${escapeHtml(w.witness_input)}</span>
+              <span class="text-[11px] text-sky-800">MCP: query_clinical_guidelines_db</span>
+            </div>
+            <p class="text-slate-800 mb-1.5">${escapeHtml(outcomeText)}</p>
+            <div class="text-[11px] font-mono-code text-slate-600">Guideline Citation: ${escapeHtml(w.evidence_citation)}</div>
+            ${hintText ? `<div class="mt-2 pt-2 border-t border-rose-200 font-semibold text-emerald-900">✅ ${currentLang === "zh" ? "推荐安全替代方案：" : "Recommended Safe Regimen: "}${escapeHtml(hintText)}</div>` : ""}
+          `;
+        }
         list.appendChild(card);
       });
     }
 
-    // Automated 5-Scene Guided Demo Tour (Bilingual)
+    // =========================================================================
+    // Automated 5-Scene Guided Demo Tour (Default: 2m45s / 165s Voiceover Sync)
+    // =========================================================================
+    let autoDemoActive = false;
+    let autoDemoPaused = false;
+    let autoDemoFinished = false;
+    let autoDemoMode = "voiceover"; // "voiceover" (165s = 2:45) | "quick" (40s)
     let autoDemoTimer = null;
+    let autoDemoLastTick = 0;
+    let autoDemoElapsedMs = 0;
+    let currentAutoSceneIdx = -1;
+    let currentAutoSubCue = -1;
+    let teleprompterWin = null;
+    let tpLangFilter = "both"; // "both" | "en" | "zh"
+    let tpFontPx = 16;
+    let lastTeleprompterRenderKey = "";
+
     const AUTO_DEMO_SCENES = [
       {
-        badge: "SCENE 1 / 5 · App #1 RepoNecromancer",
-        caption_en: "App #1 (`apps/repo-necromancer`): Hypothesis PBT shrinks `discount_rate=1.5` boundary bug that single-prompt review misses, and synthesizes a verified patch.",
-        caption_zh: "第一幕 · 应用 #1 (`apps/repo-necromancer`)：Hypothesis 属性测试自动收缩出单次 Prompt 漏检的 `discount_rate=1.5` 负数金额漏洞，并生成安全补丁。",
-        action: () => { switchView("app1"); document.getElementById("app1-preset-select").value = 0; loadApp1Preset(0); }
+        id: 1,
+        durationVoiceover: 30, // 0:00 - 0:30
+        durationQuick: 7,
+        subCueAtVoiceover: null,
+        subCueAtQuick: null,
+        badge_en: "SCENE 1 / 5 · Skeleton Crew Architecture (0:00–0:30)",
+        badge_zh: "第 1 / 5 幕 · 共享三智能体骨架 (0:00–0:30)",
+        caption_en: "Scene 1 (0:00–0:30): Highlighting the shared 3-agent Kiro Crew Skeleton Pipeline (`ClaimExtractor` → `CounterexampleHunter` → `EvidenceAuditor`).",
+        caption_zh: "第一幕 (0:00–0:30)：展示共享三智能体 Kiro Crew 流水线骨架（断言提取 → 反例猎手 → 证据裁决）。",
+        cueNote_en: "On Screen: App #1 active + animated spotlight on top #skeleton-ribbon 3-agent pipeline.",
+        cueNote_zh: "画面动作：展示应用 #1 首页，顶部 #skeleton-ribbon 三智能体流水线以动画边框高亮。",
+        script_en: "Whether an AI is generating Python checkout code or drafting a hospital discharge summary, the most dangerous bugs are silent boundary violations. For Kiroween 2026's Skeleton Crew track and AI for Medicine, we built SpecGuard-Crew: a single, domain-agnostic 3-agent verification skeleton in Kiro—ClaimExtractor, CounterexampleHunter, and EvidenceAuditor—that powers two completely different applications from the exact same formal foundation.",
+        script_zh: "无论是让 AI 生成 Python 结账代码，还是起草医院出院小结，最危险的缺陷往往是静默的边界违例。针对 Kiroween 2026 Skeleton Crew 赛道与 AI for Medicine，我们基于 Kiro 打造了 SpecGuard-Crew：一套与领域无关的三智能体核查骨架——依次经过断言提取、反例猎手与证据裁决——用同一套形式化底座驱动两个完全不同的应用。",
+        actionStart: () => {
+          switchView("app1");
+          document.getElementById("app1-preset-select").value = "0";
+          loadApp1Preset(0);
+        },
+        actionSubCue: null
       },
       {
-        badge: "SCENE 2 / 5 · App #1 Cryptographic Timing Audit",
-        caption_en: "App #1 (`apps/repo-necromancer`): Detects non-constant-time `==` token verification (CWE-208) and patches it with `hmac.compare_digest`.",
-        caption_zh: "第二幕 · 应用 #1：检出非恒定时间的 `==` 签名比对漏洞（CWE-208），自动替换为 `hmac.compare_digest`。",
-        action: () => { switchView("app1"); document.getElementById("app1-preset-select").value = 2; loadApp1Preset(2); }
+        id: 2,
+        durationVoiceover: 40, // 0:30 - 1:10
+        durationQuick: 10,
+        subCueAtVoiceover: 24, // 0:54
+        subCueAtQuick: 5,
+        badge_en: "SCENE 2 / 5 · App #1 RepoNecromancer (0:30–1:10)",
+        badge_zh: "第 2 / 5 幕 · 应用 #1 代码审计台 (0:30–1:10)",
+        caption_en: "Scene 2 (0:30–0:54): Running `RN-PRESET-01` — Hypothesis PBT shrinks `discount_rate=1.5` yielding `-50.0` and synthesizes a verified guard patch.",
+        caption_zh: "第二幕 (0:30–0:54)：运行 `RN-PRESET-01` — Hypothesis 自动收缩出 `discount_rate=1.5` 负数金额漏洞，并生成通过属性测试的安全补丁。",
+        subCueCaption_en: "Scene 2 Sub-Cue (0:54–1:10): Auto-switched to `RN-PRESET-03` — catches CWE-208 timing side-channel (`==`) and patches with `hmac.compare_digest`.",
+        subCueCaption_zh: "第二幕切换 (0:54–1:10)：自动切换下拉框并运行 `RN-PRESET-03` — 拦截 CWE-208 时序侧信道漏洞（`==`），替换为 `hmac.compare_digest`。",
+        cueNote_en: "0:30 Run RN-PRESET-01 (discount_rate=1.5) → 0:54 Auto-switch to RN-PRESET-03 (CWE-208 hmac.compare_digest).",
+        cueNote_zh: "0:30 运行 RN-PRESET-01 (discount_rate=1.5 负数漏洞) → 0:54 自动切换并运行 RN-PRESET-03 (CWE-208 hmac.compare_digest)。",
+        script_en: "[0:30–0:54] First is RepoNecromancer in `apps/repo-necromancer`. Given an AI-generated discount function, a single-prompt review sees valid syntax and misses the bug. Our Kiro Crew compiles formal EARS specs and runs our MCP Hypothesis sandbox, shrinking `discount_rate=1.5` yielding `-50.0`, and synthesizes a verified guard patch.\n\n[0:54–1:10] Next, switching to `RN-PRESET-03`, it detects a subtle CWE-208 timing side-channel in `==` token verification and automatically replaces it with constant-time `hmac.compare_digest`.",
+        script_zh: "【0:30–0:54】首先是 `apps/repo-necromancer` 代码审计台。面对 AI 生成的折扣函数，单次 Prompt 检查只看语法会直接漏报。而我们的 Kiro Crew 会编译 EARS 规约并调用 MCP Hypothesis 沙盒，自动收缩出 `discount_rate=1.5` 导致应付金额为 `-50.0` 的最小反例，并自动合成通过属性测试的安全补丁。\n\n【0:54–1:10】接着切换到 `RN-PRESET-03`，系统还能精准揪出 `==` 签名比对中的 CWE-208 时序侧信道漏洞，并自动替换为恒定时间的 `hmac.compare_digest`。",
+        actionStart: () => {
+          switchView("app1");
+          document.getElementById("app1-preset-select").value = "0";
+          loadApp1Preset(0);
+          runApp1Audit();
+        },
+        actionSubCue: () => {
+          switchView("app1");
+          document.getElementById("app1-preset-select").value = "2";
+          loadApp1Preset(2);
+          runApp1Audit();
+        }
       },
       {
-        badge: "SCENE 3 / 5 · App #2 MedEvidence-Checker",
-        caption_en: "Switching to App #2 (`apps/med-evidence-checker`): Same 3-agent Kiro Crew skeleton audits a Stage 4 CKD discharge note (eGFR 22), catching Metformin & NSAID risks.",
-        caption_zh: "第三幕 · 切换至应用 #2 (`apps/med-evidence-checker`)：同一套三智能体骨架核查 CKD 4期（eGFR 22）病历，精准拦截二甲双胍乳酸酸中毒与布洛芬肾损伤风险。",
-        action: () => { switchView("app2"); document.getElementById("app2-preset-select").value = 0; loadApp2Preset(0); }
+        id: 3,
+        durationVoiceover: 45, // 1:10 - 1:55
+        durationQuick: 11,
+        subCueAtVoiceover: 30, // 1:40
+        subCueAtQuick: 6,
+        badge_en: "SCENE 3 / 5 · App #2 MedEvidence-Checker (1:10–1:55)",
+        badge_zh: "第 3 / 5 幕 · 应用 #2 临床核查台 (1:10–1:55)",
+        caption_en: "Scene 3 (1:10–1:40): Switching smoothly in dark monitor theme to `MED-PRESET-01` (CKD Stage 4, eGFR 22) — catches Metformin & Ibuprofen contraindications.",
+        caption_zh: "第三幕 (1:10–1:40)：深海蓝暗色主题无缝切换至 `MED-PRESET-01`（CKD 4期 eGFR=22），精准拦截二甲双胍与布洛芬双重禁忌。",
+        subCueCaption_en: "Scene 3 Sub-Cue (1:40–1:55): Auto-switched to `MED-PRESET-02` — intercepts first-trimester teratogenic Lisinopril & Warfarin orders.",
+        subCueCaption_zh: "第三幕切换 (1:40–1:55)：自动切换至 `MED-PRESET-02` — 即时拦截孕早期致畸药物赖诺普利与华法林。",
+        cueNote_en: "1:10 Switch to App #2 & run MED-PRESET-01 (eGFR=22 CKD4) → 1:40 Auto-switch to MED-PRESET-02 (1st-trimester teratogens).",
+        cueNote_zh: "1:10 切至应用 #2 运行 MED-PRESET-01 (CKD4 eGFR=22 二甲双胍+布洛芬) → 1:40 自动切换运行 MED-PRESET-02 (孕早期致畸拦截)。",
+        script_en: "[1:10–1:40] With one click, the exact same skeleton powers App #2: MedEvidence-Checker in `apps/med-evidence-checker`. On a synthetic Stage 4 CKD discharge note with `eGFR 22`, ClaimExtractor isolates renal function and orders. CounterexampleHunter queries our Zero-PHI MCP pharmacology database, flagging critical risks for Metformin lactic acidosis and Ibuprofen kidney injury, while EvidenceAuditor recommends safe alternatives and attaches mandatory harm disclosures.\n\n[1:40–1:55] Switching to `MED-PRESET-02`, it immediately flags first-trimester teratogenic orders—Lisinopril and Warfarin—recommending pregnancy-safe Labetalol and Enoxaparin.",
+        script_zh: "【1:10–1:40】一键切换，同一套骨架驱动第二个应用：`apps/med-evidence-checker` 临床核查台。面对一份合成的 CKD 四期、`eGFR 22` 出院小结，ClaimExtractor 自动提取肾功能与医嘱；CounterexampleHunter 查询 Zero-PHI 本地 MCP 药理库，立即拦截二甲双胍乳酸酸中毒与布洛芬肾损伤两大高危禁忌，并推荐安全替代方案，同时强制附加伦理与受损风险披露。\n\n【1:40–1:55】切换到 `MED-PRESET-02` 孕早期病例，系统同样即时拦截致畸药物赖诺普利与华法林，并提示改用妊娠安全的拉贝洛尔与低分子肝素。",
+        actionStart: () => {
+          switchView("app2");
+          document.getElementById("app2-preset-select").value = "0";
+          loadApp2Preset(0);
+          runApp2Audit();
+        },
+        actionSubCue: () => {
+          switchView("app2");
+          document.getElementById("app2-preset-select").value = "1";
+          loadApp2Preset(1);
+          runApp2Audit();
+        }
       },
       {
-        badge: "SCENE 4 / 5 · Root /.kiro Live Inspector",
-        caption_en: "Inside `/.kiro`: 21 compiled EARS clauses across 3 specs, 3 Agent Hooks, 3 Steering Docs, Kiro Crew agents, MCP server, and Kiro Power.",
-        caption_zh: "第四幕 · 根目录 `/.kiro` 实时透视：完整展示 21 条编译后的 EARS 规约、3 个自动化 Hooks、3 份 Steering 引导文档、Kiro Crew 智能体、MCP 服务与 Kiro Power。",
-        action: () => { switchView("kiro"); }
+        id: 4,
+        durationVoiceover: 30, // 1:55 - 2:25
+        durationQuick: 7,
+        subCueAtVoiceover: null,
+        subCueAtQuick: null,
+        badge_en: "SCENE 4 / 5 · Root /.kiro Live Inspector (1:55–2:25)",
+        badge_zh: "第 4 / 5 幕 · 根目录 /.kiro 透视 (1:55–2:25)",
+        caption_en: "Scene 4 (1:55–2:25): Inside `/.kiro` — 21 compiled EARS clauses across 3 specs, 6 PBT properties, 3 Hooks, 3 Steering docs, Kiro Crew, MCP & Power.",
+        caption_zh: "第四幕 (1:55–2:25)：透视根目录 `/.kiro` — 21 条可编译 EARS 规约、6 项属性测试、3 个 Hooks、3 份 Steering、Kiro Crew、MCP 与 Kiro Power。",
+        cueNote_en: "1:55 Switch to /.kiro Live Inspector showing 21 EARS clauses & all 7 Kiro capabilities.",
+        cueNote_zh: "1:55 切换至 view-kiro，展示根目录 /.kiro 21 条 EARS 规约与 7 大 Kiro 核心特性。",
+        script_en: "Under the hood, our root `/.kiro` directory integrates all seven Kiro capabilities: 21 compiled EARS clauses across 3 spec modules, 6 formal Correctness Properties tested with Hypothesis PBT, Agent Hooks that validate specs and property tests on save, Steering docs enforcing Zero-PHI and strict separation, custom Kiro Crew agents, our local MCP server, and a reusable Kiro Power.",
+        script_zh: "深入底层，仓库根目录 `/.kiro` 完整集成了 Kiro 的七大核心能力：跨 3 个规约模块的 21 条可编译 EARS 条款、经过 Hypothesis 属性测试验证的 6 项正确性属性、保存即触发的自动化 Agent Hooks、强制 Zero-PHI 与架构解耦的 Steering 文档、自定义 Kiro Crew 智能体、本地 MCP 服务以及可复用的 Kiro Power。",
+        actionStart: () => {
+          switchView("kiro");
+        },
+        actionSubCue: null
       },
       {
-        badge: "SCENE 5 / 5 · Quantitative Evaluation Benchmarks",
-        caption_en: "Quantitative Evaluation (`benchmarks/run_evaluation.py`): SpecGuard-Crew achieves 100% Recall & 100% F1 on both Code (N=15) and Clinical (N=20) benchmarks.",
-        caption_zh: "第五幕 · 可复现定量评估基准：SpecGuard-Crew 在 15 组代码漏洞与 20 组合成临床病例上均取得 100% 召回率与 100% F1，大幅超越单次 Prompt 基线。",
-        action: () => { switchView("bench"); }
+        id: 5,
+        durationVoiceover: 20, // 2:25 - 2:45
+        durationQuick: 5,
+        subCueAtVoiceover: null,
+        subCueAtQuick: null,
+        badge_en: "SCENE 5 / 5 · Quantitative Benchmarks (2:25–2:45)",
+        badge_zh: "第 5 / 5 幕 · 定量评估基准 (2:25–2:45)",
+        caption_en: "Scene 5 (2:25–2:45): Reproducible benchmarks — SpecGuard-Crew achieves 100% Recall, 100% Specificity, and 100% F1 across both domains.",
+        caption_zh: "第五幕 (2:25–2:45)：定量评估基准 — SpecGuard-Crew 在代码（N=15）与临床（N=20）评测中均达成 100% 召回率与 100% F1。",
+        cueNote_en: "2:25 Switch to view-bench; at 2:45 hold on Scene 5 and show ✅ 演示完成.",
+        cueNote_zh: "2:25 切换至 view-bench 定量评估面板；2:45 结束时稳稳停留在第五幕并显示 ✅ 演示完成。",
+        script_en: "Finally, on reproducible benchmarks across 15 code defect samples and 20 synthetic clinical vignettes, the single-prompt baseline achieved only 20% recall on code bugs and 8.3% on clinical risks—whereas SpecGuard-Crew achieved 100% recall, 100% specificity, and 100% F1 across both domains. Thank you!",
+        script_zh: "最后，在 15 组代码缺陷与 20 组合成临床病例的可复现定量评测中，单次 Prompt 基线在代码和临床上的召回率仅分别为 20% 和 8.3%；而 SpecGuard-Crew 在两个领域均实现 100% 召回率、100% 特异度与 100% F1。感谢观看！",
+        actionStart: () => {
+          switchView("bench");
+        },
+        actionSubCue: null
       }
     ];
 
+    function getSceneDurationSec(scene) {
+      return autoDemoMode === "voiceover" ? scene.durationVoiceover : scene.durationQuick;
+    }
+
+    function getTotalDurationSec() {
+      return AUTO_DEMO_SCENES.reduce((acc, s) => acc + getSceneDurationSec(s), 0);
+    }
+
+    function getSceneBounds(idx) {
+      let startSec = 0;
+      for (let i = 0; i < idx; i++) {
+        startSec += getSceneDurationSec(AUTO_DEMO_SCENES[i]);
+      }
+      const durationSec = getSceneDurationSec(AUTO_DEMO_SCENES[idx]);
+      return { startSec, endSec: startSec + durationSec, durationSec };
+    }
+
+    function findSceneByElapsed(elapsedSec) {
+      let cursor = 0;
+      for (let i = 0; i < AUTO_DEMO_SCENES.length; i++) {
+        const dur = getSceneDurationSec(AUTO_DEMO_SCENES[i]);
+        if (elapsedSec < cursor + dur || i === AUTO_DEMO_SCENES.length - 1) {
+          const sceneElapsedSec = Math.min(dur, Math.max(0, elapsedSec - cursor));
+          return { idx: i, sceneElapsedSec, durationSec: dur, startSec: cursor };
+        }
+        cursor += dur;
+      }
+      const lastIdx = AUTO_DEMO_SCENES.length - 1;
+      const lastDur = getSceneDurationSec(AUTO_DEMO_SCENES[lastIdx]);
+      return { idx: lastIdx, sceneElapsedSec: lastDur, durationSec: lastDur, startSec: cursor - lastDur };
+    }
+
+    function formatMMSS(sec) {
+      const s = Math.max(0, Math.floor(sec));
+      const m = Math.floor(s / 60);
+      const rem = s % 60;
+      return `${m}:${String(rem).padStart(2, "0")}`;
+    }
+
+    function updateRibbonSpotlight(active) {
+      const ribbon = document.getElementById("skeleton-ribbon");
+      if (!ribbon) return;
+      ribbon.classList.toggle("ribbon-spotlight", Boolean(active));
+    }
+
+    function applyDemoStateAtElapsed(elapsedMs) {
+      const totalSec = getTotalDurationSec();
+      const elapsedSec = Math.min(totalSec, Math.max(0, elapsedMs / 1000));
+      const { idx, sceneElapsedSec } = findSceneByElapsed(elapsedSec);
+      const scene = AUTO_DEMO_SCENES[idx];
+      const subCueAt = autoDemoMode === "voiceover" ? scene.subCueAtVoiceover : scene.subCueAtQuick;
+      const subCueIdx = (subCueAt !== null && sceneElapsedSec >= subCueAt) ? 1 : 0;
+
+      if (idx !== currentAutoSceneIdx) {
+        currentAutoSceneIdx = idx;
+        currentAutoSubCue = -1;
+        updateRibbonSpotlight(idx === 0 && !autoDemoFinished);
+        scene.actionStart();
+      } else {
+        updateRibbonSpotlight(idx === 0 && !autoDemoFinished);
+      }
+
+      if (subCueIdx !== currentAutoSubCue) {
+        currentAutoSubCue = subCueIdx;
+        if (subCueIdx === 1 && scene.actionSubCue) {
+          scene.actionSubCue();
+        } else if (subCueIdx === 0 && currentAutoSceneIdx === idx) {
+          // Ensure reverting backwards inside Scene 2 / 3 restores initial preset
+          scene.actionStart();
+        }
+      }
+    }
+
+    function renderAutoDemoBanner() {
+      const totalSec = getTotalDurationSec();
+      const elapsedSec = Math.min(totalSec, Math.max(0, autoDemoElapsedMs / 1000));
+      const { idx, sceneElapsedSec, durationSec } = findSceneByElapsed(elapsedSec);
+      const scene = AUTO_DEMO_SCENES[idx];
+      const remainingSec = autoDemoFinished ? 0 : Math.max(0, Math.ceil(durationSec - sceneElapsedSec));
+      const totalFmt = formatMMSS(Math.floor(elapsedSec));
+      const targetFmt = formatMMSS(totalSec);
+
+      const stepBadge = document.getElementById("autodemo-step-badge");
+      if (stepBadge) {
+        stepBadge.textContent = currentLang === "zh" ? scene.badge_zh : scene.badge_en;
+      }
+
+      const countdownBadge = document.getElementById("autodemo-countdown-badge");
+      if (countdownBadge) {
+        if (autoDemoFinished) {
+          countdownBadge.textContent = currentLang === "zh"
+            ? `✅ 演示完成 · 总 ${targetFmt} / ${targetFmt}`
+            : `✅ Demo Complete · Total ${targetFmt} / ${targetFmt}`;
+          countdownBadge.className = "text-xs font-mono-code px-2.5 py-0.5 rounded bg-emerald-500/25 text-emerald-200 border border-emerald-400/50 font-bold";
+        } else if (autoDemoPaused) {
+          countdownBadge.textContent = currentLang === "zh"
+            ? `⏸ 已暂停 · 本幕剩 ${remainingSec}s · 总 ${totalFmt} / ${targetFmt}`
+            : `⏸ PAUSED · Scene ${remainingSec}s left · Total ${totalFmt} / ${targetFmt}`;
+          countdownBadge.className = "text-xs font-mono-code px-2.5 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 font-semibold";
+        } else {
+          countdownBadge.textContent = currentLang === "zh"
+            ? `本幕剩 ${remainingSec}s · 总 ${totalFmt} / ${targetFmt}`
+            : `Scene ${remainingSec}s left · Total ${totalFmt} / ${targetFmt}`;
+          countdownBadge.className = "text-xs font-mono-code px-2.5 py-0.5 rounded bg-slate-950/60 text-emerald-300 border border-emerald-400/35 font-semibold";
+        }
+      }
+
+      const captionEl = document.getElementById("autodemo-caption");
+      if (captionEl) {
+        if (autoDemoFinished) {
+          captionEl.textContent = currentLang === "zh"
+            ? "✅ 演示完成！已稳稳停留在第五幕（定量评估基准）。可按 🔄 重播、⏮ 回看或「停止巡演」。"
+            : "✅ Demo Complete! Held on Scene 5 (Evaluation Benchmarks). Press 🔄 Replay, ⏮ Previous, or Stop Tour.";
+        } else if (currentAutoSubCue === 1 && scene.subCueCaption_en) {
+          captionEl.textContent = currentLang === "zh" ? scene.subCueCaption_zh : scene.subCueCaption_en;
+        } else {
+          captionEl.textContent = currentLang === "zh" ? scene.caption_zh : scene.caption_en;
+        }
+      }
+
+      const progressBar = document.getElementById("autodemo-progress-bar");
+      if (progressBar) {
+        const pct = totalSec > 0 ? Math.min(100, Math.max(0, (elapsedSec / totalSec) * 100)) : 0;
+        progressBar.style.width = `${pct.toFixed(2)}%`;
+      }
+
+      const pauseBtn = document.getElementById("btn-demo-pause");
+      if (pauseBtn) {
+        if (autoDemoFinished) {
+          pauseBtn.textContent = "🔄";
+          pauseBtn.title = currentLang === "zh" ? "重播演示 (Space)" : "Replay Demo (Space)";
+        } else if (autoDemoPaused) {
+          pauseBtn.textContent = "▶";
+          pauseBtn.title = currentLang === "zh" ? "继续播放 (Space)" : "Resume (Space)";
+        } else {
+          pauseBtn.textContent = "⏸";
+          pauseBtn.title = currentLang === "zh" ? "暂停 (Space)" : "Pause (Space)";
+        }
+      }
+
+      const modeBtn = document.getElementById("btn-demo-mode");
+      if (modeBtn) {
+        if (autoDemoMode === "voiceover") {
+          modeBtn.textContent = currentLang === "zh" ? "⚡ 40s 速览" : "⚡ 40s Quick";
+        } else {
+          modeBtn.textContent = currentLang === "zh" ? "🎙️ 2:45 配音同步" : "🎙️ 2:45 Sync";
+        }
+      }
+    }
+
+    function startDemoInterval() {
+      if (autoDemoTimer) clearInterval(autoDemoTimer);
+      autoDemoLastTick = performance.now();
+      autoDemoTimer = setInterval(tickAutoDemo, 200);
+    }
+
+    function tickAutoDemo() {
+      if (!autoDemoActive || autoDemoPaused || autoDemoFinished) {
+        autoDemoLastTick = performance.now();
+        return;
+      }
+      const now = performance.now();
+      const delta = Math.min(1000, Math.max(0, now - autoDemoLastTick));
+      autoDemoLastTick = now;
+      autoDemoElapsedMs += delta;
+
+      const totalMs = getTotalDurationSec() * 1000;
+      if (autoDemoElapsedMs >= totalMs) {
+        autoDemoElapsedMs = totalMs;
+        autoDemoFinished = true;
+        autoDemoPaused = false;
+        if (autoDemoTimer) {
+          clearInterval(autoDemoTimer);
+          autoDemoTimer = null;
+        }
+        applyDemoStateAtElapsed(totalMs);
+        updateRibbonSpotlight(false);
+        renderAutoDemoBanner();
+        syncTeleprompter(true);
+        return;
+      }
+
+      applyDemoStateAtElapsed(autoDemoElapsedMs);
+      renderAutoDemoBanner();
+      syncTeleprompter(false);
+    }
+
     function toggleAutoDemo() {
-      if (autoDemoTimer) {
+      if (autoDemoActive) {
         stopAutoDemo();
         return;
       }
-      let idx = 0;
-      const banner = document.getElementById("autodemo-banner");
-      banner.classList.remove("hidden");
+      startAutoDemo();
+    }
 
-      const runScene = () => {
-        const s = AUTO_DEMO_SCENES[idx];
-        document.getElementById("autodemo-step-badge").textContent = s.badge;
-        document.getElementById("autodemo-caption").textContent = currentLang === "zh" ? s.caption_zh : s.caption_en;
-        s.action();
-        idx = (idx + 1) % AUTO_DEMO_SCENES.length;
-      };
-      runScene();
-      autoDemoTimer = setInterval(runScene, 5500);
+    function startAutoDemo() {
+      autoDemoActive = true;
+      autoDemoPaused = false;
+      autoDemoFinished = false;
+      autoDemoElapsedMs = 0;
+      currentAutoSceneIdx = -1;
+      currentAutoSubCue = -1;
+
+      document.getElementById("autodemo-banner").classList.remove("hidden");
+      const autoBtnLabel = document.getElementById("i18n-btn-autodemo");
+      if (autoBtnLabel) {
+        autoBtnLabel.textContent = currentLang === "zh" ? "⏹ 停止导览" : "⏹ Stop Tour";
+      }
+
+      applyDemoStateAtElapsed(0);
+      renderAutoDemoBanner();
+      syncTeleprompter(true);
+      startDemoInterval();
     }
 
     function stopAutoDemo() {
+      autoDemoActive = false;
+      autoDemoPaused = false;
+      autoDemoFinished = false;
       if (autoDemoTimer) {
         clearInterval(autoDemoTimer);
         autoDemoTimer = null;
       }
+      updateRibbonSpotlight(false);
       document.getElementById("autodemo-banner").classList.add("hidden");
+      const autoBtnLabel = document.getElementById("i18n-btn-autodemo");
+      if (autoBtnLabel) {
+        autoBtnLabel.textContent = I18N[currentLang]["i18n-btn-autodemo"];
+      }
+      syncTeleprompter(true);
     }
+
+    function toggleAutoDemoPause() {
+      if (!autoDemoActive) {
+        startAutoDemo();
+        return;
+      }
+      if (autoDemoFinished) {
+        startAutoDemo();
+        return;
+      }
+      autoDemoPaused = !autoDemoPaused;
+      autoDemoLastTick = performance.now();
+      renderAutoDemoBanner();
+      syncTeleprompter(true);
+    }
+
+    function jumpToAutoDemoScene(targetIdx) {
+      if (!autoDemoActive) startAutoDemo();
+      const clamped = Math.max(0, Math.min(AUTO_DEMO_SCENES.length - 1, targetIdx));
+      const { startSec } = getSceneBounds(clamped);
+      autoDemoFinished = false;
+      autoDemoElapsedMs = startSec * 1000;
+      currentAutoSceneIdx = -1;
+      currentAutoSubCue = -1;
+      applyDemoStateAtElapsed(autoDemoElapsedMs);
+      renderAutoDemoBanner();
+      syncTeleprompter(true);
+      if (!autoDemoTimer) startDemoInterval();
+    }
+
+    function prevAutoDemoScene() {
+      if (!autoDemoActive) return;
+      const curIdx = currentAutoSceneIdx >= 0 ? currentAutoSceneIdx : 0;
+      const target = Math.max(0, curIdx - 1);
+      jumpToAutoDemoScene(target);
+    }
+
+    function nextAutoDemoScene() {
+      if (!autoDemoActive) return;
+      const curIdx = currentAutoSceneIdx >= 0 ? currentAutoSceneIdx : 0;
+      if (curIdx >= AUTO_DEMO_SCENES.length - 1) {
+        autoDemoElapsedMs = getTotalDurationSec() * 1000;
+        autoDemoFinished = true;
+        autoDemoPaused = false;
+        if (autoDemoTimer) {
+          clearInterval(autoDemoTimer);
+          autoDemoTimer = null;
+        }
+        applyDemoStateAtElapsed(autoDemoElapsedMs);
+        updateRibbonSpotlight(false);
+        renderAutoDemoBanner();
+        syncTeleprompter(true);
+        return;
+      }
+      jumpToAutoDemoScene(curIdx + 1);
+    }
+
+    function toggleAutoDemoMode() {
+      autoDemoMode = autoDemoMode === "voiceover" ? "quick" : "voiceover";
+      if (autoDemoActive) {
+        autoDemoElapsedMs = 0;
+        autoDemoFinished = false;
+        currentAutoSceneIdx = -1;
+        currentAutoSubCue = -1;
+        applyDemoStateAtElapsed(0);
+        renderAutoDemoBanner();
+        syncTeleprompter(true);
+        if (!autoDemoTimer) startDemoInterval();
+      }
+    }
+
+    function setTeleprompterLang(mode) {
+      tpLangFilter = mode;
+      syncTeleprompter(true);
+    }
+
+    function adjustTeleprompterFont(delta) {
+      tpFontPx = Math.min(26, Math.max(12, tpFontPx + delta));
+      syncTeleprompter(true);
+    }
+
+    function openTeleprompterWindow() {
+      if (!autoDemoActive) {
+        startAutoDemo();
+      }
+      if (teleprompterWin && !teleprompterWin.closed) {
+        teleprompterWin.focus();
+        syncTeleprompter(true);
+        return;
+      }
+      const win = window.open(
+        "",
+        "specguard-teleprompter",
+        "width=580,height=740,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes"
+      );
+      if (!win) {
+        const cap = document.getElementById("autodemo-caption");
+        if (cap) {
+          cap.textContent = currentLang === "zh"
+            ? "⚠️ 浏览器拦截了弹窗，请允许本页面打开独立提词器窗口后重试。"
+            : "⚠️ Popup blocked by browser — please allow popups for this site and click 📜 again.";
+        }
+        return;
+      }
+      teleprompterWin = win;
+      lastTeleprompterRenderKey = "";
+
+      const htmlDoc = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>📜 SpecGuard-Crew 提词器 / Voiceover Teleprompter</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: #070b12;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+      line-height: 1.6;
+    }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .topbar {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 8px; padding-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.28);
+    }
+    .title { font-size: 14px; font-weight: 700; color: #7dd3fc; }
+    .controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    button {
+      cursor: pointer; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600;
+      background: #111c2d; color: #e2e8f0; border: 1px solid rgba(148,163,184,0.35);
+    }
+    button:hover { background: #1e293b; }
+    button.active { background: #0ea5e9; color: #04111d; border-color: #38bdf8; }
+    .status-row {
+      margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;
+      background: #0d1624; border: 1px solid rgba(56,189,248,0.25); border-radius: 10px; padding: 10px 12px;
+    }
+    .badge {
+      display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+      background: rgba(168,85,247,0.22); color: #e9d5ff; border: 1px solid rgba(192,132,252,0.4);
+    }
+    .timer { font-size: 13px; font-weight: 700; color: #6ee7b7; }
+    .pill {
+      padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+      background: rgba(16,185,129,0.2); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.4);
+    }
+    .bars { margin-top: 10px; display: grid; gap: 6px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; }
+    .bar-track { height: 7px; border-radius: 999px; background: #0f172a; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+    .bar-fill-total { height: 100%; width: 0%; background: linear-gradient(90deg, #34d399, #38bdf8, #a855f7); transition: width 0.2s linear; }
+    .bar-fill-scene { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #34d399); transition: width 0.2s linear; }
+    .cue-box {
+      margin-top: 12px; padding: 10px 12px; border-radius: 8px;
+      background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.35);
+      font-size: 12px; color: #bae6fd;
+    }
+    .script-card {
+      margin-top: 12px; padding: 14px; border-radius: 10px;
+      background: #0c1421; border: 1px solid rgba(148,163,184,0.25);
+    }
+    .script-card h4 {
+      margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #fbbf24;
+    }
+    .script-text { white-space: pre-line; margin: 0; color: #f8fafc; }
+    .next-card {
+      margin-top: 14px; padding: 10px 12px; border-radius: 8px;
+      background: rgba(15,23,42,0.65); border: 1px dashed rgba(148,163,184,0.28);
+      font-size: 12px; color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="title">📜 SpecGuard-Crew 独立提词器 · Teleprompter</div>
+    <div class="controls">
+      <button onclick="window.opener && window.opener.prevAutoDemoScene()" title="上一幕">⏮</button>
+      <button id="tp-btn-pause" onclick="window.opener && window.opener.toggleAutoDemoPause()" title="暂停/继续">⏸</button>
+      <button onclick="window.opener && window.opener.nextAutoDemoScene()" title="下一幕">⏭</button>
+      <button id="tp-btn-lang-both" onclick="window.opener && window.opener.setTeleprompterLang('both')">双语</button>
+      <button id="tp-btn-lang-zh" onclick="window.opener && window.opener.setTeleprompterLang('zh')">中文</button>
+      <button id="tp-btn-lang-en" onclick="window.opener && window.opener.setTeleprompterLang('en')">EN</button>
+      <button onclick="window.opener && window.opener.adjustTeleprompterFont(-2)">A-</button>
+      <button onclick="window.opener && window.opener.adjustTeleprompterFont(2)">A+</button>
+    </div>
+  </div>
+
+  <div class="status-row">
+    <div>
+      <span id="tp-scene-badge" class="badge mono">SCENE 1 / 5</span>
+      <span id="tp-mode-badge" class="mono" style="font-size:11px;color:#c4b5fd;margin-left:6px;">2:45 Sync</span>
+    </div>
+    <div id="tp-countdown" class="timer mono">本幕剩 30s · 总 0:00 / 2:45</div>
+    <div id="tp-status-pill" class="pill mono">▶ PLAYING</div>
+  </div>
+
+  <div class="bars">
+    <div>
+      <div class="bar-label mono"><span>Current Scene Progress / 本幕进度</span><span id="tp-scene-pct">0%</span></div>
+      <div class="bar-track"><div id="tp-scene-bar" class="bar-fill-scene"></div></div>
+    </div>
+    <div>
+      <div class="bar-label mono"><span>Total Demo Progress / 总进度</span><span id="tp-total-pct">0%</span></div>
+      <div class="bar-track"><div id="tp-total-bar" class="bar-fill-total"></div></div>
+    </div>
+  </div>
+
+  <div id="tp-cue-box" class="cue-box mono"></div>
+  <div id="tp-script-body"></div>
+</body>
+</html>`;
+
+      win.document.open();
+      win.document.write(htmlDoc);
+      win.document.close();
+      syncTeleprompter(true);
+    }
+
+    function syncTeleprompter(forceRender) {
+      if (!teleprompterWin || teleprompterWin.closed) return;
+      const doc = teleprompterWin.document;
+      if (!doc || !doc.getElementById("tp-countdown")) return;
+
+      const totalSec = getTotalDurationSec();
+      const elapsedSec = Math.min(totalSec, Math.max(0, autoDemoElapsedMs / 1000));
+      const { idx, sceneElapsedSec, durationSec } = findSceneByElapsed(elapsedSec);
+      const scene = AUTO_DEMO_SCENES[idx];
+      const remainingSec = autoDemoFinished ? 0 : Math.max(0, Math.ceil(durationSec - sceneElapsedSec));
+      const totalFmt = formatMMSS(Math.floor(elapsedSec));
+      const targetFmt = formatMMSS(totalSec);
+
+      const scenePct = durationSec > 0 ? Math.min(100, Math.max(0, (sceneElapsedSec / durationSec) * 100)) : 100;
+      const totalPct = totalSec > 0 ? Math.min(100, Math.max(0, (elapsedSec / totalSec) * 100)) : 100;
+
+      doc.getElementById("tp-scene-badge").textContent = currentLang === "zh" ? scene.badge_zh : scene.badge_en;
+      doc.getElementById("tp-mode-badge").textContent = autoDemoMode === "voiceover" ? "2:45 Voiceover Sync" : "40s Quick";
+
+      const countdownEl = doc.getElementById("tp-countdown");
+      if (!autoDemoActive) {
+        countdownEl.textContent = `⏹ 已停止 / Stopped`;
+      } else if (autoDemoFinished) {
+        countdownEl.textContent = `✅ 演示完成 · ${targetFmt} / ${targetFmt}`;
+      } else {
+        countdownEl.textContent = `本幕剩 ${remainingSec}s · 总 ${totalFmt} / ${targetFmt}`;
+      }
+
+      const pill = doc.getElementById("tp-status-pill");
+      const pauseBtn = doc.getElementById("tp-btn-pause");
+      if (!autoDemoActive) {
+        pill.textContent = "⏹ STOPPED";
+        pill.style.background = "rgba(244,63,94,0.2)";
+        pill.style.color = "#fda4af";
+        if (pauseBtn) pauseBtn.textContent = "▶";
+      } else if (autoDemoFinished) {
+        pill.textContent = "✅ 演示完成";
+        pill.style.background = "rgba(16,185,129,0.25)";
+        pill.style.color = "#6ee7b7";
+        if (pauseBtn) pauseBtn.textContent = "🔄";
+      } else if (autoDemoPaused) {
+        pill.textContent = "⏸ PAUSED";
+        pill.style.background = "rgba(245,158,11,0.22)";
+        pill.style.color = "#fcd34d";
+        if (pauseBtn) pauseBtn.textContent = "▶";
+      } else {
+        pill.textContent = "▶ PLAYING";
+        pill.style.background = "rgba(16,185,129,0.2)";
+        pill.style.color = "#6ee7b7";
+        if (pauseBtn) pauseBtn.textContent = "⏸";
+      }
+
+      doc.getElementById("tp-scene-bar").style.width = `${scenePct.toFixed(1)}%`;
+      doc.getElementById("tp-total-bar").style.width = `${totalPct.toFixed(1)}%`;
+      doc.getElementById("tp-scene-pct").textContent = `${Math.round(scenePct)}%`;
+      doc.getElementById("tp-total-pct").textContent = `${Math.round(totalPct)}%`;
+
+      const renderKey = `${idx}-${currentAutoSubCue}-${autoDemoFinished}-${autoDemoActive}-${autoDemoMode}-${tpLangFilter}-${tpFontPx}-${currentLang}`;
+      if (!forceRender && renderKey === lastTeleprompterRenderKey) return;
+      lastTeleprompterRenderKey = renderKey;
+
+      ["both", "zh", "en"].forEach(m => {
+        const b = doc.getElementById(`tp-btn-lang-${m}`);
+        if (b) b.className = tpLangFilter === m ? "active" : "";
+      });
+
+      const subCueLabel = currentAutoSubCue === 1
+        ? (currentLang === "zh" ? " · [已触发本幕后半段自动切换]" : " · [Mid-scene switch active]")
+        : "";
+      doc.getElementById("tp-cue-box").innerHTML = `<strong>🎬 画面与操作提示：</strong>${escapeHtml(scene.cueNote_zh)}<br/><span style="opacity:0.85;">${escapeHtml(scene.cueNote_en)}${escapeHtml(subCueLabel)}</span>`;
+
+      let scriptHtml = "";
+      if (tpLangFilter === "both" || tpLangFilter === "en") {
+        scriptHtml += `
+          <div class="script-card">
+            <h4>🎙️ English Voiceover Script (Scene ${scene.id} / 5)</h4>
+            <p class="script-text" style="font-size:${tpFontPx}px;">${escapeHtml(scene.script_en)}</p>
+          </div>
+        `;
+      }
+      if (tpLangFilter === "both" || tpLangFilter === "zh") {
+        scriptHtml += `
+          <div class="script-card">
+            <h4>🎙️ 简体中文逐字配音稿（第 ${scene.id} / 5 幕）</h4>
+            <p class="script-text" style="font-size:${tpFontPx}px;">${escapeHtml(scene.script_zh)}</p>
+          </div>
+        `;
+      }
+
+      const nextScene = AUTO_DEMO_SCENES[idx + 1];
+      if (nextScene) {
+        scriptHtml += `
+          <div class="next-card">
+            <strong>⏭ 下一幕预告：</strong>${escapeHtml(nextScene.badge_zh)} — ${escapeHtml(nextScene.cueNote_zh)}
+          </div>
+        `;
+      } else {
+        scriptHtml += `
+          <div class="next-card" style="color:#6ee7b7;border-color:rgba(52,211,153,0.4);">
+            <strong>🏁 最终幕：</strong>倒计时归零后画面将稳稳停留在第五幕（定量评估基准），并显示 <code>✅ 演示完成</code>。
+          </div>
+        `;
+      }
+      doc.getElementById("tp-script-body").innerHTML = scriptHtml;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (!autoDemoActive) return;
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault();
+        toggleAutoDemoPause();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevAutoDemoScene();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextAutoDemoScene();
+      }
+    });
 
     window.addEventListener("DOMContentLoaded", initWorkbench);
   </script>
